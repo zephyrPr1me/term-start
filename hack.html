@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="dark">
+<title>root@kali :: command center</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%80%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#0a0707;
+    --bg-panel:#120b0b;
+    --bg-panel-alt:#170e0e;
+    --border:#3a1a1a;
+    --text:#e9dcdc;
+    --text-dim:#8f6f6f;
+    --accent:#ff3b3b;
+    --accent-dim:#7a1f1f;
+    --accent-glow:rgba(255,59,59,.35);
+    --success:#3ecf6a;
+    --danger:#ff3b3b;
+    --radius:6px;
+  }
+  body[data-theme="matrix"]{
+    --bg:#020402;
+    --bg-panel:#050f07;
+    --bg-panel-alt:#081408;
+    --border:#123d1c;
+    --text:#c9ffd2;
+    --text-dim:#5f9a6b;
+    --accent:#00ff6a;
+    --accent-dim:#0b5c26;
+    --accent-glow:rgba(0,255,106,.35);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+    font-size:15px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .crt-overlay{
+    position:fixed; inset:0; pointer-events:none; z-index:50;
+    background:repeating-linear-gradient(to bottom, rgba(255,255,255,.025) 0px, rgba(255,255,255,.025) 1px, transparent 1px, transparent 3px);
+    mix-blend-mode:overlay;
+  }
+
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;font-size:inherit;cursor:pointer;}
+  input{font-family:inherit;font-size:inherit;}
+
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+  .wrap{
+    max-width:1280px;
+    margin:clamp(20px,4vh,48px) auto;
+    padding:0 20px 40px;
+  }
+
+  .terminal{
+    background:var(--bg-panel);
+    border:1px solid var(--border);
+    border-radius:8px;
+    box-shadow:0 0 0 1px rgba(0,0,0,.4), 0 20px 60px rgba(0,0,0,.5);
+    overflow:hidden;
+  }
+
+  /* titlebar */
+  .titlebar{
+    display:flex;align-items:center;gap:16px;
+    padding:10px 16px;
+    background:var(--bg-panel-alt);
+    border-bottom:1px solid var(--border);
+  }
+  .dots{display:flex;gap:6px;flex:0 0 auto;}
+  .dots span{width:9px;height:9px;border-radius:50%;display:block;background:var(--border);}
+  .dots span:nth-child(1){background:var(--accent-dim);}
+  .dots span:nth-child(3){background:var(--accent);opacity:.7;}
+  .path{color:var(--text-dim);font-size:.82rem;flex:1 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .theme-switch{display:flex;border:1px solid var(--border);border-radius:4px;overflow:hidden;flex:0 0 auto;}
+  .theme-switch button{
+    background:transparent;border:0;color:var(--text-dim);padding:5px 10px;font-size:.72rem;letter-spacing:.03em;
+  }
+  .theme-switch button.active{background:var(--accent);color:var(--bg);}
+  .home-link{
+    flex:0 0 auto;border:1px solid var(--border);border-radius:4px;
+    color:var(--text-dim);padding:4px 10px;font-size:.72rem;letter-spacing:.03em;
+  }
+  .home-link:hover{color:var(--accent);border-color:var(--accent);border-radius:4px;background:transparent;}
+
+  /* header / brand + stats */
+  .brand-row{
+    display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:flex-start;
+    padding:22px 24px 18px;
+    border-bottom:1px solid var(--border);
+  }
+  .brand{display:flex;gap:16px;align-items:center;}
+  .skull{
+    margin:0;color:var(--accent);text-shadow:0 0 12px var(--accent-glow);
+    font-size:11px;line-height:1.15;opacity:.9;
+  }
+  .brand-text h1{margin:0;font-size:1.9rem;font-weight:700;letter-spacing:.01em;text-shadow:0 0 18px var(--accent-glow);}
+  .brand-text h1 .dim{color:var(--text-dim);}
+  .brand-text .tagline{margin:4px 0 0;color:var(--text-dim);font-size:.85rem;}
+  .cursor{animation:blink 1s steps(1) infinite;color:var(--accent);}
+  @keyframes blink{50%{opacity:0;}}
+
+  .stats{display:flex;flex-wrap:wrap;gap:20px 28px;}
+  .stat{display:flex;flex-direction:column;gap:2px;min-width:90px;}
+  .stat-label{font-size:.68rem;color:var(--text-dim);letter-spacing:.04em;}
+  .stat-value{font-size:.95rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:6px;}
+  .stat-value.is-on{color:var(--success);}
+  .stat-value.is-off{color:var(--danger);}
+  #ipRefresh{background:transparent;border:1px solid var(--border);color:var(--text-dim);border-radius:4px;width:20px;height:20px;line-height:1;font-size:.75rem;}
+  #ipRefresh:hover{color:var(--accent);border-color:var(--accent);}
+
+  /* search */
+  .search-block{padding:20px 24px;border-bottom:1px solid var(--border);}
+  .prompt-line{font-size:.85rem;color:var(--text-dim);margin-bottom:10px;}
+  .prompt-line .accent{color:var(--accent);}
+  .engines{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+  .engines button{
+    background:transparent;border:1px solid var(--border);color:var(--text-dim);
+    padding:5px 12px;border-radius:4px;font-size:.78rem;
+  }
+  .engines button.active{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+  .search-form{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);padding-bottom:8px;}
+  .search-form:focus-within{border-color:var(--accent);}
+  .prompt-caret{color:var(--accent);font-weight:700;}
+  #searchInput{flex:1;background:transparent;border:0;color:var(--text);outline:none;padding:6px 0;}
+  #searchInput::placeholder{color:var(--text-dim);}
+  .search-form button[type="submit"]{
+    background:var(--accent-dim);border:1px solid var(--accent);color:var(--text);
+    padding:6px 14px;border-radius:4px;font-size:.78rem;
+  }
+  .search-form button[type="submit"]:hover{background:var(--accent);color:var(--bg);}
+
+  /* link directory */
+  .links-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:0;
+  }
+  .category{padding:20px 24px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{
+    border:1px solid var(--border);background:var(--bg-panel-alt);color:var(--text);
+    padding:6px 11px;border-radius:4px;font-size:.8rem;
+  }
+  .chip:hover{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+  .custom-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--bg-panel-alt);border-radius:4px;padding:2px 4px 2px 11px;}
+  .custom-chip a{font-size:.8rem;}
+  .custom-chip:hover{border-color:var(--accent);}
+  .chip-del{background:transparent;border:0;color:var(--text-dim);font-size:.9rem;padding:2px 6px;border-radius:3px;}
+  .chip-del:hover{color:var(--danger);}
+  .empty-hint{color:var(--text-dim);font-size:.8rem;font-style:italic;}
+  .custom-form{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .custom-form input{
+    background:transparent;border:1px solid var(--border);color:var(--text);
+    padding:6px 9px;border-radius:4px;flex:1 1 120px;min-width:0;
+  }
+  .custom-form input:focus{border-color:var(--accent);outline:none;}
+  .custom-form button{
+    background:transparent;border:1px solid var(--accent);color:var(--accent);
+    padding:6px 14px;border-radius:4px;font-size:.8rem;
+  }
+  .custom-form button:hover{background:var(--accent);color:var(--bg);}
+
+  .foot{
+    display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;
+    padding:14px 24px;color:var(--text-dim);font-size:.75rem;
+  }
+  kbd{
+    background:var(--bg-panel-alt);border:1px solid var(--border);border-radius:3px;
+    padding:1px 6px;font-family:inherit;
+  }
+
+  @media (max-width:640px){
+    .category{border-right:0;}
+    .brand-row{flex-direction:column;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .cursor{animation:none;opacity:1;}
+  }
+</style>
+</head>
+<body data-theme="redteam">
+<div class="crt-overlay"></div>
+<div class="wrap">
+  <div class="terminal">
+
+    <div class="titlebar">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <div class="path">user@kali: ~/homepage</div>
+      <a class="home-link" href="index.html" title="вернуться на term·start">← home</a>
+      <div class="theme-switch">
+        <button data-theme-btn="redteam" class="active">redteam</button>
+        <button data-theme-btn="matrix">matrix</button>
+      </div>
+    </div>
+
+    <header class="brand-row">
+      <div class="brand">
+        <pre class="skull">    _______
+  /`       `\
+ |  ()   ()  |
+ |     ^     |
+ |  'vvvvv'  |
+  \_________/
+   |  |||  |
+   |__|||__|</pre>
+        <div class="brand-text">
+          <h1>root<span class="dim">@</span>kali</h1>
+          <p class="tagline">// command center <span class="cursor">_</span></p>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="stat-label">local time</span><span class="stat-value" id="clockVal">--:--:--</span></div>
+        <div class="stat"><span class="stat-label">date</span><span class="stat-value" id="dateVal">----</span></div>
+        <div class="stat">
+          <span class="stat-label">public ip</span>
+          <span class="stat-value"><span id="ipVal">...</span><button id="ipRefresh" title="обновить">⟳</button></span>
+        </div>
+        <div class="stat"><span class="stat-label">uptime</span><span class="stat-value" id="uptimeVal">00:00:00</span></div>
+        <div class="stat"><span class="stat-label">link</span><span class="stat-value" id="onlineVal">● online</span></div>
+      </div>
+    </header>
+
+    <section class="search-block">
+      <div class="prompt-line"><span class="accent">$</span> search</div>
+      <div class="engines" id="engineTabs">
+        <button data-engine="ddg">duckduckgo</button>
+        <button data-engine="google">google</button>
+        <button data-engine="shodan">shodan</button>
+        <button data-engine="censys">censys</button>
+        <button data-engine="exploitdb">exploit-db</button>
+        <button data-engine="github">github</button>
+      </div>
+      <form id="searchForm" class="search-form">
+        <span class="prompt-caret">&gt;</span>
+        <input id="searchInput" type="text" autocomplete="off" placeholder="введи запрос и жми enter..." />
+        <button type="submit">enter</button>
+      </form>
+    </section>
+
+    <section class="links-grid">
+
+      <div class="category">
+        <div class="prompt-line"><span class="accent">$</span> ls ./recon-osint/</div>
+        <div class="chips">
+          <a class="chip" href="https://www.shodan.io" target="_blank" rel="noopener noreferrer">shodan</a>
+          <a class="chip" href="https://search.censys.io" target="_blank" rel="noopener noreferrer">censys</a>
+          <a class="chip" href="https://crt.sh" target="_blank" rel="noopener noreferrer">crt.sh</a>
+          <a class="chip" href="https://web.archive.org" target="_blank" rel="noopener noreferrer">wayback machine</a>
+          <a class="chip" href="https://haveibeenpwned.com" target="_blank" rel="noopener noreferrer">have i been pwned</a>
+          <a class="chip" href="https://osintframework.com" target="_blank" rel="noopener noreferrer">osint framework</a>
+          <a class="chip" href="https://dnsdumpster.com" target="_blank" rel="noopener noreferrer">dnsdumpster</a>
+          <a class="chip" href="https://github.com/laramies/theHarvester" target="_blank" rel="noopener noreferrer">theHarvester</a>
+          <!-- добавляй свои ссылки сюда: <a class="chip" href="...">label</a> -->
+        </div>
+      </div>
+
+      <div class="category">
+        <div class="prompt-line"><span class="accent">$</span> ls ./exploit-cve/</div>
+        <div class="chips">
+          <a class="chip" href="https://www.exploit-db.com" target="_blank" rel="noopener noreferrer">exploit-db</a>
+          <a class="chip" href="https://nvd.nist.gov" target="_blank" rel="noopener noreferrer">nvd</a>
+          <a class="chip" href="https://cve.mitre.org" target="_blank" rel="noopener noreferrer">mitre cve</a>
+          <a class="chip" href="https://vulners.com" target="_blank" rel="noopener noreferrer">vulners</a>
+          <a class="chip" href="https://packetstormsecurity.com" target="_blank" rel="noopener noreferrer">packet storm</a>
+          <a class="chip" href="https://gtfobins.github.io" target="_blank" rel="noopener noreferrer">gtfobins</a>
+          <a class="chip" href="https://lolbas-project.github.io" target="_blank" rel="noopener noreferrer">lolbas</a>
+          <a class="chip" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">cisa kev</a>
+        </div>
+      </div>
+
+      <div class="category">
+        <div class="prompt-line"><span class="accent">$</span> ls ./learning-ctf/</div>
+        <div class="chips">
+          <a class="chip" href="https://www.hackthebox.com" target="_blank" rel="noopener noreferrer">hack the box</a>
+          <a class="chip" href="https://tryhackme.com" target="_blank" rel="noopener noreferrer">tryhackme</a>
+          <a class="chip" href="https://portswigger.net/web-security" target="_blank" rel="noopener noreferrer">web security academy</a>
+          <a class="chip" href="https://pentesterlab.com" target="_blank" rel="noopener noreferrer">pentesterlab</a>
+          <a class="chip" href="https://www.vulnhub.com" target="_blank" rel="noopener noreferrer">vulnhub</a>
+          <a class="chip" href="https://ctftime.org" target="_blank" rel="noopener noreferrer">ctftime</a>
+          <a class="chip" href="https://overthewire.org" target="_blank" rel="noopener noreferrer">overthewire</a>
+          <a class="chip" href="https://picoctf.org" target="_blank" rel="noopener noreferrer">picoctf</a>
+        </div>
+      </div>
+
+      <div class="category">
+        <div class="prompt-line"><span class="accent">$</span> ls ./tool-docs/</div>
+        <div class="chips">
+          <a class="chip" href="https://www.kali.org/tools/" target="_blank" rel="noopener noreferrer">kali tools</a>
+          <a class="chip" href="https://nmap.org/book/man.html" target="_blank" rel="noopener noreferrer">nmap</a>
+          <a class="chip" href="https://docs.metasploit.com" target="_blank" rel="noopener noreferrer">metasploit</a>
+          <a class="chip" href="https://portswigger.net/burp/documentation" target="_blank" rel="noopener noreferrer">burp suite</a>
+          <a class="chip" href="https://www.wireshark.org/docs/" target="_blank" rel="noopener noreferrer">wireshark</a>
+          <a class="chip" href="https://hashcat.net/hashcat/" target="_blank" rel="noopener noreferrer">hashcat</a>
+          <a class="chip" href="https://owasp.org" target="_blank" rel="noopener noreferrer">owasp</a>
+          <a class="chip" href="https://book.hacktricks.xyz" target="_blank" rel="noopener noreferrer">hacktricks</a>
+        </div>
+      </div>
+
+      <div class="category">
+        <div class="prompt-line"><span class="accent">$</span> ls ./news-community/</div>
+        <div class="chips">
+          <a class="chip" href="https://news.ycombinator.com" target="_blank" rel="noopener noreferrer">hacker news</a>
+          <a class="chip" href="https://www.reddit.com/r/netsec/" target="_blank" rel="noopener noreferrer">r/netsec</a>
+          <a class="chip" href="https://thehackernews.com" target="_blank" rel="noopener noreferrer">the hacker news</a>
+          <a class="chip" href="https://www.bleepingcomputer.com" target="_blank" rel="noopener noreferrer">bleepingcomputer</a>
+          <a class="chip" href="https://krebsonsecurity.com" target="_blank" rel="noopener noreferrer">krebs on security</a>
+          <a class="chip" href="https://www.darkreading.com" target="_blank" rel="noopener noreferrer">dark reading</a>
+        </div>
+      </div>
+
+      <div class="category">
+        <div class="prompt-line"><span class="accent">$</span> ls ./custom/</div>
+        <div class="chips" id="customChips"></div>
+        <form id="customForm" class="custom-form">
+          <input id="customLabel" placeholder="label" maxlength="40" />
+          <input id="customUrl" placeholder="https://..." maxlength="300" />
+          <button type="submit">add</button>
+        </form>
+      </div>
+
+    </section>
+
+    <footer class="foot">
+      <span>жми <kbd>/</kbd> чтобы перейти в поиск</span>
+      <span>свои ссылки — через ./custom/ или прямо в html-файле</span>
+    </footer>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  // ---------- theme ----------
+  function setTheme(t){
+    document.body.dataset.theme = t;
+    localStorage.setItem('hpTheme', t);
+    document.querySelectorAll('[data-theme-btn]').forEach(function(b){
+      b.classList.toggle('active', b.dataset.themeBtn === t);
+    });
+  }
+  document.querySelectorAll('[data-theme-btn]').forEach(function(b){
+    b.addEventListener('click', function(){ setTheme(b.dataset.themeBtn); });
+  });
+  setTheme(localStorage.getItem('hpTheme') || 'redteam');
+
+  // ---------- clock / date ----------
+  var clockVal = document.getElementById('clockVal');
+  var dateVal = document.getElementById('dateVal');
+  function pad(n){ return n.toString().padStart(2,'0'); }
+  function tickClock(){
+    var now = new Date();
+    clockVal.textContent = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+    dateVal.textContent = now.toLocaleDateString(undefined,{year:'numeric',month:'2-digit',day:'2-digit'});
+  }
+  tickClock(); setInterval(tickClock, 1000);
+
+  // ---------- uptime ----------
+  var uptimeVal = document.getElementById('uptimeVal');
+  var bootTs = Date.now();
+  function tickUptime(){
+    var diff = Math.floor((Date.now()-bootTs)/1000);
+    var h = pad(Math.floor(diff/3600));
+    var m = pad(Math.floor((diff%3600)/60));
+    var s = pad(diff%60);
+    uptimeVal.textContent = h+':'+m+':'+s;
+  }
+  tickUptime(); setInterval(tickUptime, 1000);
+
+  // ---------- online status ----------
+  var onlineVal = document.getElementById('onlineVal');
+  function tickOnline(){
+    var on = navigator.onLine;
+    onlineVal.textContent = on ? '● online' : '● offline';
+    onlineVal.classList.toggle('is-on', on);
+    onlineVal.classList.toggle('is-off', !on);
+  }
+  window.addEventListener('online', tickOnline);
+  window.addEventListener('offline', tickOnline);
+  tickOnline();
+
+  // ---------- public ip ----------
+  var ipVal = document.getElementById('ipVal');
+  var ipRefresh = document.getElementById('ipRefresh');
+  function fetchIp(){
+    ipVal.textContent = '...';
+    fetch('https://api.ipify.org?format=json', {cache:'no-store'})
+      .then(function(res){ if(!res.ok) throw new Error('bad response'); return res.json(); })
+      .then(function(data){ ipVal.textContent = data.ip; })
+      .catch(function(){ ipVal.textContent = 'unreachable'; });
+  }
+  ipRefresh.addEventListener('click', fetchIp);
+  fetchIp();
+
+  // ---------- search engines ----------
+  var ENGINES = {
+    ddg:      function(q){ return 'https://duckduckgo.com/?q='+encodeURIComponent(q); },
+    google:   function(q){ return 'https://www.google.com/search?q='+encodeURIComponent(q); },
+    shodan:   function(q){ return 'https://www.shodan.io/search?query='+encodeURIComponent(q); },
+    censys:   function(q){ return 'https://search.censys.io/search?resource=hosts&q='+encodeURIComponent(q); },
+    exploitdb:function(q){ return 'https://www.exploit-db.com/search?q='+encodeURIComponent(q); },
+    github:   function(q){ return 'https://github.com/search?q='+encodeURIComponent(q); }
+  };
+  var engineTabs = document.getElementById('engineTabs');
+  var searchForm = document.getElementById('searchForm');
+  var searchInput = document.getElementById('searchInput');
+  var currentEngine = localStorage.getItem('hpEngine') || 'ddg';
+  if(!ENGINES[currentEngine]) currentEngine = 'ddg';
+
+  function setEngine(key){
+    currentEngine = key;
+    localStorage.setItem('hpEngine', key);
+    engineTabs.querySelectorAll('button').forEach(function(b){
+      b.classList.toggle('active', b.dataset.engine === key);
+    });
+  }
+  engineTabs.addEventListener('click', function(e){
+    var btn = e.target.closest('button');
+    if(!btn) return;
+    setEngine(btn.dataset.engine);
+    searchInput.focus();
+  });
+  setEngine(currentEngine);
+
+  searchForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var q = searchInput.value.trim();
+    if(!q) return;
+    var build = ENGINES[currentEngine] || ENGINES.ddg;
+    window.open(build(q), '_blank', 'noopener');
+  });
+
+  document.addEventListener('keydown', function(e){
+    var tag = document.activeElement ? document.activeElement.tagName : '';
+    if(e.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA'){
+      e.preventDefault();
+      searchInput.focus();
+    }
+  });
+
+  // ---------- custom links ----------
+  var customChips = document.getElementById('customChips');
+  var customForm = document.getElementById('customForm');
+  var customLabel = document.getElementById('customLabel');
+  var customUrl = document.getElementById('customUrl');
+
+  function loadCustom(){
+    try { return JSON.parse(localStorage.getItem('hpCustomLinks') || '[]'); }
+    catch(e){ return []; }
+  }
+  function saveCustom(arr){ localStorage.setItem('hpCustomLinks', JSON.stringify(arr)); }
+
+  function renderCustom(){
+    var arr = loadCustom();
+    customChips.innerHTML = '';
+    if(!arr.length){
+      var hint = document.createElement('span');
+      hint.className = 'empty-hint';
+      hint.textContent = 'пока пусто — добавь ссылку ниже';
+      customChips.appendChild(hint);
+      return;
+    }
+    arr.forEach(function(item, idx){
+      var wrap = document.createElement('span');
+      wrap.className = 'custom-chip';
+      var a = document.createElement('a');
+      a.href = item.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.textContent = item.label;
+      var del = document.createElement('button');
+      del.className = 'chip-del'; del.textContent = '×'; del.title = 'удалить';
+      del.addEventListener('click', function(){
+        var arr2 = loadCustom();
+        arr2.splice(idx, 1);
+        saveCustom(arr2);
+        renderCustom();
+      });
+      wrap.appendChild(a); wrap.appendChild(del);
+      customChips.appendChild(wrap);
+    });
+  }
+
+  customForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var label = customLabel.value.trim();
+    var url = customUrl.value.trim();
+    if(!label || !url) return;
+    if(!/^https?:\/\//i.test(url)) url = 'https://' + url;
+    var arr = loadCustom();
+    arr.push({label: label, url: url});
+    saveCustom(arr);
+    customLabel.value = ''; customUrl.value = '';
+    renderCustom();
+  });
+
+  renderCustom();
+})();
+</script>
+</body>
+</html>

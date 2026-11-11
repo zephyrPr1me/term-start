@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="ru" data-theme="phosphor">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="application-version" content="1.0.0" />
+    <meta name="page-version" content="1.0.0" />
+    <title>term·start</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%230b0e0b'/%3E%3Crect x='3' y='3' width='7' height='10' fill='%2394c584'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/iosevka@5/400.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/iosevka@5/700.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/victor-mono@5/400.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/victor-mono@5/700.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/400.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/700.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/fira-code@5/400.css"
+    />
+  </head>
+  <body>
+    <div class="wrap">
+      <header id="masthead">
+        <pre id="ascii" aria-hidden="true">
+┌──[ term·start ]──────────────────────────────
+<span id="ascii-subtitle" data-i18n="asciiSubtitle">│ search · links · bookmarks · weather</span>
+└──────────────────────────────────  ~/start</pre>
+        <div id="clockbox">
+          <div id="clock" aria-live="off">00:00:00</div>
+          <div id="date">&nbsp;</div>
+          <div id="head-actions">
+            <div
+              class="language-switch"
+              role="group"
+              aria-label="Language"
+              data-i18n-aria-label="language"
+            >
+              <button
+                type="button"
+                class="language-option"
+                id="lang-ru"
+                data-language="ru"
+                aria-pressed="true"
+              >
+                RU
+              </button>
+              <button
+                type="button"
+                class="language-option"
+                id="lang-en"
+                data-language="en"
+                aria-pressed="false"
+              >
+                EN
+              </button>
+            </div>
+            <button
+              type="button"
+              class="btn"
+              id="ha-cmds"
+              title="быстрые действия (ctrl+k)"
+              data-i18n="command"
+              data-i18n-title="quickActionsTitle"
+            >
+              :cmd
+            </button>
+            <button
+              type="button"
+              class="btn"
+              id="ha-adv"
+              title="расширенный поиск (a)"
+              data-i18n="advancedButton"
+              data-i18n-title="advanced"
+            >
+              adv
+            </button>
+            <button
+              type="button"
+              class="btn"
+              id="ha-add"
+              title="правка быстрых ссылок (e)"
+              data-i18n="addLinkButton"
+              data-i18n-title="addLink"
+            >
+              +link
+            </button>
+            <button
+              type="button"
+              class="btn"
+              id="ha-bm"
+              title="импорт закладок (i)"
+              data-i18n="importButton"
+              data-i18n-title="importBookmarksTitle"
+            >
+              ⇪bm
+            </button>
+            <button
+              type="button"
+              class="btn"
+              id="ha-cfg"
+              title="настройки (ctrl+,)"
+              data-i18n="configButton"
+              data-i18n-title="settings"
+            >
+              cfg
+            </button>
+            <a
+              href="hack.html"
+              class="btn"
+              id="ha-hack"
+              title="перейти в hack-режим"
+              data-i18n="hackButton"
+              data-i18n-title="hackTitle"
+            >
+              ↯hack
+            </a>
+            <button
+              type="button"
+              class="btn"
+              id="ha-help"
+              title="помощь (?)"
+              data-i18n-title="help"
+            >
+              ?
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <section class="panel" id="search-panel">
+        <div class="panel-head">
+          <span class="panel-title" data-i18n="search">search</span>
+          <span class="hr" aria-hidden="true"></span>
+          <span class="panel-tag" id="engine-tag">google</span>
+        </div>
+        <div class="prompt-row">
+          <label class="prompt" for="q"
+            ><span class="p-user">guest@term</span>:<span class="p-path">~</span
+            >$</label
+          >
+          <div class="input-wrap">
+            <input
+              id="q"
+              type="text"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+              placeholder="поиск, url, !bang или :команда…"
+              aria-label="Строка поиска"
+              data-i18n-placeholder="searchPlaceholder"
+              data-i18n-aria-label="searchAria"
+            />
+            <span id="mirror" aria-hidden="true"></span>
+            <span id="cursor" aria-hidden="true">▊</span>
+          </div>
+        </div>
+        <div id="suggest" class="suggest" hidden></div>
+        <div class="chips" id="chips"></div>
+        <div class="hint-row" data-i18n="searchHint">
+          tab — движок · !bang — разовый поиск · enter — искать · ctrl+enter — новая
+          вкладка · : — команды
+        </div>
+      </section>
+
+      <div class="content-grid">
+        <section class="panel" id="links-panel">
+          <div class="panel-head">
+            <span class="panel-title" data-i18n="quickLinks">quick links</span>
+            <span class="hr" aria-hidden="true"></span>
+            <span class="panel-tag" data-i18n="keyRange">клавиши 1–9</span>
+            <button type="button" class="btn" id="links-edit" data-i18n="edit">
+              edit
+            </button>
+          </div>
+          <div id="links" class="links"></div>
+          <form id="link-form" hidden>
+            <input type="hidden" id="lf-idx" value="-1" />
+            <input
+              id="lf-name"
+              type="text"
+              placeholder="имя"
+              data-i18n-placeholder="linkName"
+              autocomplete="off"
+            />
+            <input
+              id="lf-url"
+              type="text"
+              placeholder="url (example.com)"
+              data-i18n-placeholder="linkUrl"
+              autocomplete="off"
+            />
+            <input
+              id="lf-group"
+              type="text"
+              placeholder="группа"
+              data-i18n-placeholder="linkGroup"
+              autocomplete="off"
+            />
+            <input
+              id="lf-key"
+              type="text"
+              placeholder="клавиша"
+              data-i18n-placeholder="linkKey"
+              maxlength="1"
+              autocomplete="off"
+            />
+            <button type="submit" class="btn" data-i18n="save">[ save ]</button>
+            <button type="button" class="btn" id="lf-cancel" data-i18n="cancel">
+              [ cancel ]
+            </button>
+          </form>
+        </section>
+
+        <section class="panel weather-panel" id="weather-panel">
+          <div class="panel-head">
+            <span class="panel-title" data-i18n="weather">weather</span>
+            <span class="hr" aria-hidden="true"></span>
+            <button
+              type="button"
+              class="btn weather-locate"
+              id="weather-locate"
+              title="Use current location"
+              aria-label="Use current location"
+              data-i18n-title="useLocation"
+              data-i18n-aria-label="useLocation"
+            >
+              ◎
+            </button>
+          </div>
+          <form id="weather-form" class="weather-form">
+            <input
+              id="weather-location"
+              type="search"
+              placeholder="City"
+              autocomplete="off"
+              aria-label="City"
+              data-i18n-placeholder="weatherCity"
+              data-i18n-aria-label="weatherCity"
+            />
+            <button
+              type="submit"
+              class="btn"
+              id="weather-search"
+              data-i18n="weatherSearch"
+            >
+              Go
+            </button>
+          </form>
+          <div
+            id="weather-status"
+            class="weather-status"
+            data-i18n="weatherStart"
+            aria-live="polite"
+          >
+            Enter a city or use your location.
+          </div>
+          <div id="weather-current" class="weather-current" hidden></div>
+          <div id="weather-forecast" class="weather-forecast" hidden></div>
+          <div class="weather-source">Open-Meteo</div>
+        </section>
+      </div>
+
+      <section class="panel" id="bookmarks-panel">
+        <div class="panel-head">
+          <span class="panel-title" data-i18n="bookmarks">bookmarks</span>
+          <span class="hr" aria-hidden="true"></span>
+          <span class="panel-tag" id="bm-count"></span>
+          <button type="button" class="btn" id="bm-import" data-i18n="import">
+            [ import ]
+          </button>
+          <input type="file" id="bm-file" accept=".html,.htm,text/html" hidden />
+        </div>
+        <div class="bookmark-tools">
+          <input
+            id="bm-filter"
+            type="search"
+            placeholder="Поиск по названию или адресу"
+            data-i18n-placeholder="bookmarkFilter"
+            autocomplete="off"
+            aria-label="Фильтр закладок"
+            data-i18n-aria-label="bookmarkFilter"
+          />
+          <div
+            class="bookmark-views"
+            role="group"
+            aria-label="Bookmark filter"
+            data-i18n-aria-label="bookmarkView"
+          >
+            <button
+              type="button"
+              class="bookmark-view active"
+              data-view="all"
+              data-i18n="bookmarkAll"
+            >
+              All
+            </button>
+            <button
+              type="button"
+              class="bookmark-view"
+              data-view="favorites"
+              data-i18n="bookmarkFavorites"
+            >
+              Favorites
+            </button>
+            <button
+              type="button"
+              class="bookmark-view"
+              data-view="recent"
+              data-i18n="bookmarkRecent"
+            >
+              Recent
+            </button>
+          </div>
+          <button
+            type="button"
+            class="btn bookmark-tool"
+            id="bm-collapse"
+            data-i18n="collapseAll"
+          >
+            Collapse all
+          </button>
+          <button
+            type="button"
+            class="btn bookmark-tool"
+            id="bm-expand"
+            data-i18n="expandAll"
+          >
+            Expand all
+          </button>
+          <button
+            type="button"
+            class="btn bookmark-tool"
+            id="bm-add-folder"
+            data-i18n="addFolder"
+          >
+            + folder
+          </button>
+        </div>
+        <form id="bm-folder-form" class="bookmark-folder-form" hidden>
+          <input
+            id="bm-folder-name"
+            type="text"
+            placeholder="Название папки"
+            data-i18n-placeholder="folderName"
+            autocomplete="off"
+          />
+          <button type="submit" class="btn" data-i18n="createFolder">Create</button>
+          <button type="button" class="btn" id="bm-folder-cancel" data-i18n="cancel">
+            Cancel
+          </button>
+        </form>
+        <div id="bookmarks" class="bookmarks"></div>
+      </section>
+    </div>
+
+    <footer id="statusline">
+      <div class="st-left">
+        <button
+          type="button"
+          id="st-theme"
+          class="st-seg"
+          title="сменить тему (t)"
+          data-i18n-title="settingTheme"
+        >
+          theme:phosphor
+        </button>
+        <span class="st-sep">│</span>
+        <button
+          type="button"
+          id="st-engine"
+          class="st-seg"
+          title="движок по умолчанию"
+          data-i18n-title="settingEngine"
+        >
+          eng:google
+        </button>
+        <span class="st-sep">│</span>
+        <button
+          type="button"
+          id="st-links"
+          class="st-seg"
+          title="правка ссылок (e)"
+          data-i18n-title="addLink"
+        >
+          links:0
+        </button>
+        <span class="st-sep">│</span>
+        <button
+          type="button"
+          id="st-bm"
+          class="st-seg"
+          title="к закладкам (b)"
+          data-i18n-title="bookmarks"
+        >
+          bm:0
+        </button>
+        <span class="st-sep">│</span>
+        <span
+          id="st-up"
+          class="st-seg"
+          title="время с открытия страницы"
+          data-i18n-title="uptimeTitle"
+          >up 0:00</span
+        >
+      </div>
+      <div class="st-right" data-i18n="statusHelp">
+        / поиск · ctrl+k действия · ? помощь
+      </div>
+    </footer>
+
+    <div class="overlay" id="palette" hidden>
+      <div
+        class="dialog pal"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Быстрые действия"
+        data-i18n-aria-label="commandsDialog"
+      >
+        <div class="dialog-head">
+          <span class="dialog-title">:commands</span
+          ><span class="hr" aria-hidden="true"></span
+          ><button type="button" class="btn overlay-close">esc</button>
+        </div>
+        <input
+          id="pal-input"
+          type="text"
+          placeholder="команда…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <div class="pal-list" id="pal-list"></div>
+        <div class="dialog-foot">↑↓ — выбор · enter — выполнить · esc — закрыть</div>
+      </div>
+    </div>
+
+    <div class="overlay" id="settings" hidden>
+      <div
+        class="dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Настройки"
+        data-i18n-aria-label="settingsDialog"
+      >
+        <div class="dialog-head">
+          <span class="dialog-title">~/.term-startrc</span
+          ><span class="hr" aria-hidden="true"></span
+          ><button type="button" class="btn overlay-close">esc</button>
+        </div>
+        <div id="set-body" class="dialog-body"></div>
+        <input
+          type="file"
+          id="set-import-file"
+          accept=".json,application/json"
+          hidden
+        />
+        <div class="dialog-foot" data-i18n="settingsFoot">
+          изменения применяются сразу · [ export ] / [ restore ] — бэкап настроек в json
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="help" hidden>
+      <div
+        class="dialog help"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Помощь"
+        data-i18n-aria-label="helpDialog"
+      >
+        <div class="dialog-head">
+          <span class="dialog-title">man term-start</span
+          ><span class="hr" aria-hidden="true"></span
+          ><button type="button" class="btn overlay-close">esc</button>
+        </div>
+        <div id="help-body" class="dialog-body"></div>
+      </div>
+    </div>
+
+    <div class="overlay" id="advanced-search" hidden>
+      <div
+        class="dialog advanced-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Расширенный поиск"
+        data-i18n-aria-label="advancedTitle"
+      >
+        <div class="dialog-head">
+          <span class="dialog-title" data-i18n="advancedTitle">advanced search</span
+          ><span class="hr" aria-hidden="true"></span
+          ><button type="button" class="btn overlay-close">esc</button>
+        </div>
+        <form id="advanced-form">
+          <div class="advanced-grid">
+            <label class="advanced-field"
+              ><span data-i18n="advancedEngine">Поисковый движок</span>
+              <select id="adv-engine">
+                <option value="google">Google</option>
+                <option value="ddg">DuckDuckGo</option>
+              </select>
+            </label>
+            <label class="advanced-field"
+              ><span data-i18n="advancedPeriod">За какой период</span>
+              <select id="adv-time">
+                <option value="" data-i18n="allTime">За все время</option>
+                <option value="h" data-i18n="lastHour">Последний час</option>
+                <option value="d" data-i18n="lastDay">Последние 24 часа</option>
+                <option value="w" data-i18n="lastWeek">Последняя неделя</option>
+                <option value="m" data-i18n="lastMonth">Последний месяц</option>
+                <option value="y" data-i18n="lastYear">Последний год</option>
+              </select>
+            </label>
+            <label class="advanced-field advanced-wide"
+              ><span data-i18n="primaryQuery">Основной запрос</span
+              ><input
+                id="adv-query"
+                type="text"
+                placeholder="Что ищем?"
+                data-i18n-placeholder="primaryQuery"
+                autocomplete="off"
+            /></label>
+            <label class="advanced-field advanced-wide"
+              ><span data-i18n="exactPhrase">Точная фраза</span
+              ><input
+                id="adv-exact"
+                type="text"
+                placeholder="фраза в кавычках"
+                data-i18n-placeholder="exactPhrase"
+                autocomplete="off"
+            /></label>
+            <label class="advanced-field"
+              ><span data-i18n="excludeWords">Исключить слова</span
+              ><input
+                id="adv-exclude"
+                type="text"
+                placeholder="слова через пробел"
+                data-i18n-placeholder="excludeWords"
+                autocomplete="off"
+            /></label>
+            <label class="advanced-field"
+              ><span data-i18n="alternatives">Одно из слов (OR)</span
+              ><input
+                id="adv-or"
+                type="text"
+                placeholder="javascript typescript"
+                autocomplete="off"
+            /></label>
+            <label class="advanced-field"
+              ><span data-i18n="siteDomain">Сайт или домен</span
+              ><input
+                id="adv-site"
+                type="text"
+                placeholder="github.com или .edu"
+                data-i18n-placeholder="siteDomain"
+                autocomplete="off"
+            /></label>
+            <label class="advanced-field"
+              ><span data-i18n="fileType">Тип файла</span>
+              <select id="adv-filetype">
+                <option value="" data-i18n="anyFile">Любой тип</option>
+                <option value="pdf">PDF (.pdf)</option>
+                <option value="doc">Word (.doc / .docx)</option>
+                <option value="xls">Excel (.xls / .xlsx)</option>
+                <option value="ppt">PowerPoint (.ppt)</option>
+                <option value="txt">Текстовый (.txt)</option>
+              </select>
+            </label>
+            <label class="advanced-field"
+              ><span data-i18n="titleWord">Слово в заголовке (intitle:)</span
+              ><input
+                id="adv-intitle"
+                type="text"
+                placeholder="руководство"
+                data-i18n-placeholder="titleWord"
+                autocomplete="off"
+            /></label>
+            <label class="advanced-field"
+              ><span data-i18n="urlWord">Слово в адресе (inurl:)</span
+              ><input
+                id="adv-inurl"
+                type="text"
+                placeholder="blog"
+                data-i18n-placeholder="urlWord"
+                autocomplete="off"
+            /></label>
+            <label class="advanced-field"
+              ><span data-i18n="languageRegion">Язык / регион выдачи</span>
+              <select id="adv-lang">
+                <option value="" data-i18n="any">Любой</option>
+                <option value="ru" data-i18n="languageRussian">Русский</option>
+                <option value="en" data-i18n="languageEnglish">Английский</option>
+                <option value="de" data-i18n="languageGerman">Немецкий</option>
+                <option value="fr" data-i18n="languageFrench">Французский</option>
+              </select>
+            </label>
+          </div>
+          <div class="advanced-preview-wrap">
+            <label for="advanced-preview" data-i18n="finalQuery">Итоговый запрос</label>
+            <div class="advanced-preview" id="advanced-preview" aria-live="polite">
+              data-i18n="queryPreview">Поисковый запрос появится здесь...
+            </div>
+          </div>
+          <div class="advanced-actions">
+            <span id="advanced-note" class="advanced-note"></span
+            ><button type="submit" class="btn" id="advanced-submit">
+              <span data-i18n="searchIn">Искать в Google</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="dropzone" hidden>
+      <div class="dz-box">⇪ отпустите файл закладок (.html)</div>
+    </div>
+    <div id="toasts" aria-live="polite"></div>
+
+    <noscript
+      ><div style="padding: 2rem; color: #94c584">
+        нужен включённый javascript
+      </div></noscript
+    >
+    <script src="app.js"></script>
+  </body>
+</html>
