@@ -1,3 +1,5 @@
+import { launchObsidianUri } from './obsidian-bridge.js';
+
 /* RYU · tateru — search, shortcuts, bookmarks, and settings.
    storage: localStorage key "termstart.v1"
    bangs:   !g google · !d ddg · !yt youtube · !w wikipedia · … (см. ENGINES) */
@@ -340,6 +342,8 @@ const TRANSLATIONS = {
     linkUrl: 'url (example.com)',
     linkGroup: 'группа',
     linkKey: 'клавиша',
+    openInObsidian: 'Открыть в Obsidian',
+    obsidianUriOnly: 'URI-схема работает только с obsidian://-ссылками',
     save: 'сохранить',
     cancel: 'отмена',
     bookmarks: 'закладки',
@@ -520,6 +524,8 @@ const TRANSLATIONS = {
     linkUrl: 'url (example.com)',
     linkGroup: 'group',
     linkKey: 'key',
+    openInObsidian: 'Open in Obsidian',
+    obsidianUriOnly: 'The URI scheme only works with obsidian:// links',
     save: 'save',
     cancel: 'cancel',
     bookmarks: 'bookmarks',
@@ -772,6 +778,7 @@ function applyLinkTarget(a) {
 
 function normalizeUrl(s) {
   s = s.trim();
+  if (/^obsidian:\/\//i.test(s)) return s;
   if (!/^https?:\/\//i.test(s)) s = 'https://' + s;
   return s;
 }
@@ -1570,8 +1577,25 @@ function showLinkForm(editIdx) {
     $('#lf-group').value = '';
     $('#lf-key').value = '';
   }
+  updateObsidianLinkAction();
   $('#lf-name').focus();
 }
+
+const obsidianLinkButton = $('#lf-open-obsidian');
+function updateObsidianLinkAction() {
+  const url = $('#lf-url').value.trim();
+  const isObsidianUri = /^obsidian:\/\//i.test(url);
+  const isMarkdownLink = /\.md(?:[?#].*)?$/i.test(url);
+  obsidianLinkButton.hidden = !isObsidianUri && !isMarkdownLink;
+  obsidianLinkButton.disabled = !isObsidianUri;
+  obsidianLinkButton.title = isObsidianUri ? '' : t('obsidianUriOnly');
+}
+
+$('#lf-url').addEventListener('input', updateObsidianLinkAction);
+obsidianLinkButton.addEventListener('click', () => {
+  const url = $('#lf-url').value.trim();
+  if (/^obsidian:\/\//i.test(url)) launchObsidianUri(url);
+});
 
 linkForm.addEventListener('submit', (ev) => {
   ev.preventDefault();

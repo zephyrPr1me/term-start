@@ -1,3 +1,5 @@
+import { buildNewUri, launchObsidianUri, loadObsidianConfig } from './obsidian-bridge.js';
+
 /* RYU · kowasu — authorized CTF and learning workspace behavior.
    Shared layout and themes live in assets/css/ and theme-loader.js. */
 
@@ -180,6 +182,8 @@
       moduleNotes: '手記 · Notes',
       notesPlaceholder: 'Заметка для текущей сессии…',
       notesLocal: 'Сохраняется только в этом браузере',
+      obsidianButton: '→ Obsidian',
+      obsidianVaultPrompt: 'Укажите хранилище Obsidian в панели профиля.',
       customLinksTag: 'ЛИЧНЫЕ ССЫЛКИ',
       ipNote: 'Публичный IP запрашивается только по нажатию через api.ipify.org.',
       toastDeleted: 'удалено',
@@ -304,6 +308,8 @@
       moduleNotes: '手記 · Notes',
       notesPlaceholder: 'A note for this session…',
       notesLocal: 'Saved only in this browser',
+      obsidianButton: '→ Obsidian',
+      obsidianVaultPrompt: 'Set your Obsidian vault in the profile panel.',
       customLinksTag: 'PERSONAL LINKS',
       ipNote: 'Public IP lookup runs only on request via api.ipify.org.',
       toastDeleted: 'deleted',
@@ -757,6 +763,24 @@
     fieldNotes.addEventListener('input', function () {
       writeStore('hpFieldNotes', fieldNotes.value);
       if (notesCount) notesCount.textContent = fieldNotes.value.length + ' / 5000';
+    });
+  }
+
+  const obsidianButton = $('#notes-obsidian');
+  const obsidianHint = $('#notes-obsidian-hint');
+  if (obsidianButton && fieldNotes && obsidianHint) {
+    obsidianButton.addEventListener('click', function () {
+      const vault = loadObsidianConfig().vault.trim();
+      if (!vault) {
+        obsidianHint.textContent = t('obsidianVaultPrompt');
+        obsidianHint.hidden = false;
+        return;
+      }
+
+      obsidianHint.textContent = '';
+      obsidianHint.hidden = true;
+      const name = 'Session ' + new Date().toISOString().slice(0, 10);
+      launchObsidianUri(buildNewUri(vault, name, fieldNotes.value));
     });
   }
 

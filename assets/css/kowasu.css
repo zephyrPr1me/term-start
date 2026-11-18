@@ -445,6 +445,19 @@ body.kowasu {
   color: var(--kowasu-muted);
 }
 
+.notes-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 7px;
+}
+
+#notes-obsidian-hint {
+  color: var(--accent2);
+  font-size: 11px;
+}
+
 .notes-meta {
   display: flex;
   justify-content: space-between;
