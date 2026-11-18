@@ -9,6 +9,7 @@ body.kowasu {
   --kowasu-muted: color-mix(in srgb, var(--fg) 80%, var(--fg-mute));
   background-color: var(--bg);
   background-image:
+    url('../img/seigaiha.svg'),
     radial-gradient(
       ellipse at 8% -18%,
       color-mix(in srgb, var(--accent) 12%, transparent),
@@ -16,7 +17,8 @@ body.kowasu {
     ),
     linear-gradient(color-mix(in srgb, var(--fg) 2%, transparent) 1px, transparent 1px),
     linear-gradient(90deg, color-mix(in srgb, var(--fg) 2%, transparent) 1px, transparent 1px);
-  background-size: auto, 32px 32px, 32px 32px;
+  background-size: 80px 80px, auto, 32px 32px, 32px 32px;
+  background-repeat: repeat, no-repeat, repeat, repeat;
   background-attachment: fixed;
 }
 
@@ -39,17 +41,11 @@ body.kowasu {
   gap: 14px;
 }
 
-.workspace-mark {
-  display: grid;
-  place-items: center;
+.hanko {
+  display: block;
   width: 52px;
   height: 52px;
-  border: 1px solid var(--accent);
-  color: var(--accent);
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: -1px;
-  background: color-mix(in srgb, var(--accent) 8%, var(--bg));
+  flex: 0 0 52px;
 }
 
 .workspace-label,
@@ -72,6 +68,42 @@ body.kowasu {
   margin-top: 5px;
   letter-spacing: 0;
   font-size: 13px;
+}
+
+.authorized-banner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: 12px;
+  padding: 9px 12px;
+  border-left: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 5%, var(--bg-panel));
+  color: var(--kowasu-secondary);
+  font-size: 12px;
+}
+
+.authorized-banner strong {
+  color: var(--accent);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+
+.module-title-jp {
+  color: var(--accent);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 1.05em;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+}
+
+.module-title-en {
+  margin-left: 0.55em;
+  color: var(--fg-mute);
+  font-family: var(--mono);
+  font-size: 0.75em;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
 
 .kowasu #clockbox {
@@ -179,6 +211,18 @@ body.kowasu {
   margin: 0;
   padding: 15px 16px;
   background: var(--bg-panel);
+  animation: module-ink-in 200ms ease-out both;
+}
+
+@keyframes module-ink-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .module-quicklinks {
@@ -375,6 +419,10 @@ body.kowasu {
 
 .module-status .node-row {
   padding: 10px 0;
+}
+
+#userAgentVal {
+  max-width: 24ch;
 }
 
 #field-notes {
@@ -690,6 +738,24 @@ body.kowasu {
   color: var(--kowasu-secondary);
 }
 
+.authorized-disclaimer {
+  margin-bottom: 16px;
+  padding: 12px;
+  border-left: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 5%, var(--bg-panel));
+}
+
+.authorized-disclaimer strong {
+  color: var(--accent);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+
+.authorized-disclaimer p {
+  margin: 6px 0 0;
+}
+
 @media (max-width: 840px) {
   .kowasu-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -716,6 +782,11 @@ body.kowasu {
 
   .workspace-identity p {
     max-width: 26ch;
+  }
+
+  .authorized-banner {
+    grid-template-columns: 1fr;
+    gap: 4px;
   }
 
   .kowasu #clockbox {
@@ -770,6 +841,7 @@ body.kowasu {
 @media (prefers-reduced-motion: reduce) {
   .quick-access-link,
   .module-link,
+  .kowasu-grid .module,
   .settings-drawer[open] {
     transition: none;
     animation: none;

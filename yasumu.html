@@ -7,7 +7,7 @@
     <meta name="application-name" content="RYU" />
     <meta
       name="description"
-      content="Терминальное пространство RYU для отдыха, развлечений и короткой передышки."
+      content="Терминальное пространство RYU для отдыха, развлечений и публичных Telegram-каналов."
     />
     <title>RYU · off-duty</title>
     <link
@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="assets/css/foundation.css" />
     <link rel="stylesheet" href="assets/css/links.css" />
     <link rel="stylesheet" href="assets/css/interface.css" />
-    <link rel="stylesheet" href="assets/css/leisure.css" />
+    <link rel="stylesheet" href="assets/css/yasumu.css" />
   </head>
   <body class="leisure">
     <div class="wrap">
@@ -27,7 +27,6 @@
           <div>
             <div class="leisure-label">PAUSE / LEISURE</div>
             <h1>OFF-DUTY</h1>
-            <p>Территория без задач и дедлайнов.</p>
           </div>
         </div>
         <div id="clockbox">
@@ -35,46 +34,12 @@
           <div id="date">&nbsp;</div>
           <nav id="head-actions" aria-label="Быстрое переключение страниц">
             <a class="btn" href="index.html" title="Страница Tateru">tateru</a>
-            <a class="btn" href="hack.html" title="Страница Kowasu">kowasu</a>
+            <a class="btn" href="kowasu.html" title="Страница Kowasu">kowasu</a>
           </nav>
         </div>
       </header>
 
       <main class="leisure-main">
-        <section class="panel leisure-panel" aria-labelledby="workspace-title">
-          <div class="panel-head">
-            <h2 class="panel-title" id="workspace-title">пространства</h2>
-            <span class="hr" aria-hidden="true"></span>
-            <span class="panel-tag">ctrl+enter — следующее</span>
-          </div>
-          <nav class="links leisure-workspaces" aria-label="Страницы RYU">
-            <a class="link workspace-link" href="index.html">
-              <span class="lk-icon-fallback" aria-hidden="true">T</span>
-              <span class="workspace-copy">
-                <span class="lk-name">Tateru</span>
-                <span class="workspace-description">инструменты разработки</span>
-              </span>
-              <span class="workspace-arrow" aria-hidden="true">↗</span>
-            </a>
-            <a class="link workspace-link" href="hack.html">
-              <span class="lk-icon-fallback" aria-hidden="true">K</span>
-              <span class="workspace-copy">
-                <span class="lk-name">Kowasu</span>
-                <span class="workspace-description">защитные практики</span>
-              </span>
-              <span class="workspace-arrow" aria-hidden="true">↗</span>
-            </a>
-            <a class="link workspace-link is-current" href="leisure.html" aria-current="page">
-              <span class="lk-icon-fallback" aria-hidden="true">R</span>
-              <span class="workspace-copy">
-                <span class="lk-name">Off-Duty</span>
-                <span class="workspace-description">отдых и развлечения</span>
-              </span>
-              <span class="workspace-arrow" aria-hidden="true">●</span>
-            </a>
-          </nav>
-        </section>
-
         <section class="panel leisure-panel" aria-labelledby="links-title">
           <div class="panel-head">
             <h2 class="panel-title" id="links-title">быстрые ссылки</h2>
@@ -133,24 +98,40 @@
           </div>
         </section>
 
-        <section class="panel leisure-panel leisure-break" aria-labelledby="breather-title">
+        <section class="panel leisure-panel telegram-panel" aria-labelledby="telegram-title">
           <div class="panel-head">
-            <h2 class="panel-title" id="breather-title">передышка</h2>
+            <h2 class="panel-title" id="telegram-title">telegram / <span id="telegram-channel-label">pythonl</span></h2>
             <span class="hr" aria-hidden="true"></span>
-            <span class="panel-tag">60 секунд</span>
+            <a
+              id="telegram-open"
+              class="btn"
+              href="https://t.me/pythonl"
+              target="_blank"
+              rel="noopener noreferrer"
+            >открыть канал ↗</a>
           </div>
-          <div class="breather-content">
-            <div>
-              <p class="breather-message">Можно ничего не успевать.</p>
-              <p class="breather-hint">Минута спокойного дыхания — только если хочется.</p>
+          <form class="telegram-controls" id="telegram-form">
+            <label for="telegram-username">публичный канал</label>
+            <div class="telegram-input-row">
+              <input
+                id="telegram-username"
+                name="username"
+                type="text"
+                value="pythonl"
+                placeholder="@channel_name"
+                autocomplete="off"
+                autocapitalize="off"
+                spellcheck="false"
+                required
+              />
+              <button class="btn" type="submit">показать</button>
             </div>
-            <div class="breather-controls">
-              <span id="breath-status" aria-live="polite">готов к паузе</span>
-              <button class="btn" id="breath-button" type="button">начать</button>
-            </div>
-          </div>
-          <div class="breath-track" aria-hidden="true">
-            <span id="breath-progress"></span>
+            <small>Укажи @username или ссылку t.me/username. Настройка сохраняется в этом браузере.</small>
+          </form>
+          <p class="telegram-status" id="telegram-status" aria-live="polite">загрузка ленты…</p>
+          <div class="telegram-posts" id="telegram-posts"></div>
+          <div class="telegram-footer">
+            <button class="btn" id="telegram-refresh" type="button">обновить</button>
           </div>
         </section>
       </main>
@@ -164,11 +145,11 @@
         <span class="st-sep">│</span>
         <span class="st-seg">ctrl+enter страницы</span>
       </div>
-      <span class="st-right">отдыхай в своём темпе</span>
+      <span class="st-right">публичные каналы · RSSHub</span>
     </div>
 
     <script type="module" src="assets/js/theme-loader.js"></script>
     <script type="module" src="assets/js/page-switch.js"></script>
-    <script type="module" src="assets/js/leisure.js"></script>
+    <script type="module" src="assets/js/yasumu.js"></script>
   </body>
 </html>

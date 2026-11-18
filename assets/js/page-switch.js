@@ -1,7 +1,7 @@
 const nextPage = {
-  'index.html': 'hack.html',
-  'hack.html': 'leisure.html',
-  'leisure.html': 'index.html',
+  'index.html': 'kowasu.html',
+  'kowasu.html': 'yasumu.html',
+  'yasumu.html': 'index.html',
 };
 
 window.addEventListener(

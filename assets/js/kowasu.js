@@ -1,4 +1,4 @@
-/* RYU · kowasu — defensive research workspace behavior.
+/* RYU · kowasu — authorized CTF and learning workspace behavior.
    Shared layout and themes live in assets/css/ and theme-loader.js. */
 
 (function () {
@@ -65,7 +65,7 @@
   const TRANSLATIONS = {
     ru: {
       settings: 'Настройки',
-      settingsKicker: 'РАБОЧЕЕ МЕСТО / КОНТРОЛЬ',
+      settingsKicker: 'ЛАБОРАТОРИЯ / НАСТРОЙКИ',
       theme: 'Тема',
       engine: 'Движок',
       language: 'Язык интерфейса',
@@ -79,14 +79,14 @@
       columnsTwo: 'Две',
       columnsOne: 'Одна',
       moduleControls: 'Модули рабочего стола',
-      moduleControlsHelp: 'Выберите видимые модули и задайте их порядок.',
-      showQuickLinks: 'Быстрый доступ',
-      showThreatContext: 'Контекст угроз',
-      showSessionStatus: 'Состояние сессии',
-      showDetection: 'Разработка детектов',
-      showNotes: 'Полевые заметки',
-      showLabs: 'Практические лаборатории',
-      showPinnedResources: 'Личные ресурсы',
+      moduleControlsHelp: 'Выберите видимые учебные модули и задайте их порядок.',
+      showQuickLinks: '演習 · Practice',
+      showThreatContext: '資料 · Study',
+      showSessionStatus: '接続 · Session',
+      showDetection: '防御 · Defense',
+      showNotes: '手記 · Notes',
+      showLabs: '道場 · Dojo',
+      showPinnedResources: '書庫 · Library',
       moveUp: 'Переместить вверх',
       moveDown: 'Переместить вниз',
       resetWorkspace: 'Вернуть расположение по умолчанию',
@@ -94,23 +94,32 @@
       uiPrefsInvalid: 'Настройки интерфейса повреждены; восстановлены значения по умолчанию',
       help: 'Помощь',
       search: 'Поиск',
-      searchPlaceholder: 'CVE, рекомендация, инструмент или запрос…',
+      searchPlaceholder: 'CTF, CVE или учебная тема…',
       searchHint: 'tab — движок · enter — поиск · / — фокус · t — тема · ? — помощь',
-      workspaceLabel: 'ИССЛЕДОВАНИЕ / ЗАЩИТА',
-      workspaceIntro: 'Среда для анализа угроз, защитных практик и обучения в изолированных лабораториях.',
+      workspaceLabel: 'CTF / АВТОРИЗОВАННОЕ ОБУЧЕНИЕ',
+      workspaceIntro: 'Практика только на CTF-платформах, в своих лабораториях или с явным разрешением.',
+      authorizedDisclaimer: 'Не атакуйте цели без разрешения. Практикуйтесь только на CTF-платформах, в своих лабораториях или с явным разрешением.',
+      authorizedStatus: 'только разрешённые лаборатории',
+      authorizedToast: 'Только разрешённые CTF, собственные лаборатории или тесты с явным разрешением.',
+      userAgent: 'Браузер',
       catalog: 'Каталог',
-      categoryTraining: 'обучение / ctf',
+      categoryTraining: 'авторизованное обучение / ctf',
       categoryDocs: 'документация',
       categoryNews: 'новости',
-      quickAccess: 'Быстрый доступ',
-      quickAccessTag: 'ЗАЩИТНЫЕ РЕСУРСЫ',
+      quickAccess: '演習 · Practice',
+      quickAccessTag: 'AUTHORIZED TRAINING',
       quickCisaDesc: 'Каталог активно используемых уязвимостей',
       quickNvdDesc: 'Поиск CVE и оценка уязвимостей',
       quickAttackDesc: 'Тактики, техники и меры защиты',
+      quickPortswiggerDesc: 'Учебные лаборатории веб-безопасности',
+      quickHtbDesc: 'Практика в учебных лабораториях',
+      quickTryHackMeDesc: 'Задания в изолированных комнатах',
+      quickPicoDesc: 'Образовательные CTF-задачи',
+      quickCtfTimeDesc: 'Календарь образовательных CTF',
       quickSigmaDesc: 'Открытые правила обнаружения',
       quickOwaspDesc: 'Практики безопасной разработки',
       quickLabDesc: 'Безопасные практические лаборатории',
-      customLinks: 'свои ссылки',
+      customLinks: '書庫 · Library',
       linkName: 'имя',
       linkAddress: 'Адрес ссылки',
       addLink: '[ добавить ]',
@@ -130,6 +139,7 @@
       helpNvd: 'поиск записей в базе уязвимостей NVD',
       helpCve: 'поиск идентификаторов CVE',
       helpGithub: 'код, инструменты и конфиги',
+      helpCtfTime: 'поиск учебных соревнований и задач',
       hotkeys: 'Горячие клавиши',
       focusSearch: 'фокус в строку поиска',
       switchTheme: 'переключить тему из themes.json',
@@ -143,32 +153,34 @@
       themeUnavailable: 'Темы недоступны: проверьте themes.json',
       toastTheme: 'тема',
       toastEngine: 'движок',
-      moduleIntel: 'Контекст угроз',
-      moduleIntelTag: 'РЕКОМЕНДАЦИИ / КОНТЕКСТ',
+      moduleIntel: '資料 · Study',
+      moduleIntelTag: 'ИСТОЧНИКИ / КОНТЕКСТ',
       sourceCisa: 'Официальный каталог уязвимостей, используемых в атаках',
       sourceNvd: 'Национальная база данных об уязвимостях',
       sourceCve: 'Записи об уязвимостях и их идентификаторы',
       sourceAttack: 'База знаний о поведении угроз и защитных мерах',
-      moduleStatus: 'Состояние сессии',
+      moduleStatus: '接続 · Session',
       ipNotChecked: 'не запрашивался',
       uptime: 'Время работы',
-      moduleDetection: 'Разработка детектов',
-      moduleDetectionTag: 'ПРАВИЛА / ТЕЛЕМЕТРИЯ',
+      moduleDetection: '防御 · Defense',
+      moduleDetectionTag: 'ПРАВИЛА / НАБЛЮДАЕМОСТЬ',
       sourceSigma: 'Правила обнаружения от сообщества',
       sourceYara: 'Документация по поиску шаблонов',
       sourceSuricata: 'Документация по обнаружению сетевых угроз',
       sourceZeek: 'Анализ сети и обработка событий',
       sourceOwasp: 'Практические рекомендации по безопасности приложений',
-      moduleLabs: 'Практические лаборатории',
-      moduleLabsTag: 'ИЗОЛИРОВАННАЯ СРЕДА / ОБУЧЕНИЕ',
+      moduleLabs: '道場 · Dojo',
+      moduleLabsTag: 'CTF / ИЗОЛИРОВАННЫЕ ЛАБОРАТОРИИ',
       sourcePortswigger: 'Пошаговые веб-лаборатории',
       sourceJuiceShop: 'Учебное приложение с намеренными уязвимостями',
       sourcePico: 'CTF-задачи для начинающих',
+      sourceTryHackMe: 'Практические задания в учебных комнатах',
+      sourceCtfTime: 'Календарь публичных CTF-соревнований',
       sourceOverTheWire: 'Учебные игры по Linux и безопасности',
-      moduleNotes: 'Полевые заметки',
+      moduleNotes: '手記 · Notes',
       notesPlaceholder: 'Заметка для текущей сессии…',
       notesLocal: 'Сохраняется только в этом браузере',
-      customLinksTag: 'ЛИЧНЫЙ НАБОР',
+      customLinksTag: 'ЛИЧНЫЕ ССЫЛКИ',
       ipNote: 'Публичный IP запрашивается только по нажатию через api.ipify.org.',
       toastDeleted: 'удалено',
       requiredFields: 'нужны имя и адрес',
@@ -177,7 +189,7 @@
     },
     en: {
       settings: 'Settings',
-      settingsKicker: 'WORKSPACE / CONTROLS',
+      settingsKicker: 'LAB / CONTROLS',
       theme: 'Theme',
       engine: 'Engine',
       language: 'Interface language',
@@ -191,14 +203,14 @@
       columnsTwo: 'Two',
       columnsOne: 'One',
       moduleControls: 'Workspace modules',
-      moduleControlsHelp: 'Choose visible modules and arrange their order.',
-      showQuickLinks: 'Quick access',
-      showThreatContext: 'Threat context',
-      showSessionStatus: 'Session status',
-      showDetection: 'Detection engineering',
-      showNotes: 'Field notes',
-      showLabs: 'Practice labs',
-      showPinnedResources: 'Pinned resources',
+      moduleControlsHelp: 'Choose visible learning modules and arrange their order.',
+      showQuickLinks: '演習 · Practice',
+      showThreatContext: '資料 · Study',
+      showSessionStatus: '接続 · Session',
+      showDetection: '防御 · Defense',
+      showNotes: '手記 · Notes',
+      showLabs: '道場 · Dojo',
+      showPinnedResources: '書庫 · Library',
       moveUp: 'Move up',
       moveDown: 'Move down',
       resetWorkspace: 'Reset layout to default',
@@ -206,23 +218,32 @@
       uiPrefsInvalid: 'Interface settings are invalid; defaults were restored',
       help: 'Help',
       search: 'Search',
-      searchPlaceholder: 'CVE, advisory, tool or query…',
+      searchPlaceholder: 'CTF, CVE, or learning topic…',
       searchHint: 'tab — engine · enter — search · / — focus · t — theme · ? — help',
-      workspaceLabel: 'RESEARCH / DEFENSE',
-      workspaceIntro: 'A focused desk for threat context, defensive practice, and sandboxed learning.',
+      workspaceLabel: 'CTF / AUTHORIZED LEARNING',
+      workspaceIntro: 'Practice only in CTFs, your own labs, or with explicit permission.',
+      authorizedDisclaimer: 'Do not attack targets without permission. Practice only in CTF platforms, your own labs, or with explicit authorization.',
+      authorizedStatus: 'authorized labs only',
+      authorizedToast: 'Use only authorized CTFs, your own labs, or explicitly permitted tests.',
+      userAgent: 'Browser',
       catalog: 'Catalog',
-      categoryTraining: 'training / ctf',
+      categoryTraining: 'authorized learning / ctf',
       categoryDocs: 'documentation',
       categoryNews: 'news',
-      quickAccess: 'Quick access',
-      quickAccessTag: 'DEFENSIVE RESOURCES',
+      quickAccess: '演習 · Practice',
+      quickAccessTag: 'AUTHORIZED TRAINING',
       quickCisaDesc: 'Catalog of vulnerabilities exploited in the wild',
       quickNvdDesc: 'CVE search and vulnerability scoring',
       quickAttackDesc: 'Tactics, techniques, and mitigations',
+      quickPortswiggerDesc: 'Guided web security labs',
+      quickHtbDesc: 'Hands-on practice in training labs',
+      quickTryHackMeDesc: 'Challenges in isolated rooms',
+      quickPicoDesc: 'Educational CTF challenges',
+      quickCtfTimeDesc: 'Calendar of educational CTF events',
       quickSigmaDesc: 'Open detection rules',
       quickOwaspDesc: 'Secure development practices',
       quickLabDesc: 'Safe hands-on security labs',
-      customLinks: 'custom links',
+      customLinks: '書庫 · Library',
       linkName: 'name',
       linkAddress: 'Link address',
       addLink: '[ add ]',
@@ -242,6 +263,7 @@
       helpNvd: 'search the National Vulnerability Database',
       helpCve: 'search CVE records',
       helpGithub: 'code, tools and configs',
+      helpCtfTime: 'search educational competitions and challenges',
       hotkeys: 'Keyboard shortcuts',
       focusSearch: 'focus the search box',
       switchTheme: 'switch theme from themes.json',
@@ -255,32 +277,34 @@
       themeUnavailable: 'Themes unavailable: check themes.json',
       toastTheme: 'theme',
       toastEngine: 'engine',
-      moduleIntel: 'Threat context',
-      moduleIntelTag: 'ADVISORIES / CONTEXT',
+      moduleIntel: '資料 · Study',
+      moduleIntelTag: 'REFERENCES / CONTEXT',
       sourceCisa: 'Official catalog of vulnerabilities exploited in the wild',
       sourceNvd: 'National Vulnerability Database',
       sourceCve: 'Vulnerability records and identifiers',
       sourceAttack: 'Knowledge base of adversary behavior and defenses',
-      moduleStatus: 'Session status',
+      moduleStatus: '接続 · Session',
       ipNotChecked: 'not requested',
       uptime: 'Uptime',
-      moduleDetection: 'Detection engineering',
-      moduleDetectionTag: 'RULES / TELEMETRY',
+      moduleDetection: '防御 · Defense',
+      moduleDetectionTag: 'RULES / VISIBILITY',
       sourceSigma: 'Community-maintained detection rules',
       sourceYara: 'Pattern-matching documentation',
       sourceSuricata: 'Network threat detection documentation',
       sourceZeek: 'Network analysis and event framework',
       sourceOwasp: 'Practical application security guidance',
-      moduleLabs: 'Practice labs',
-      moduleLabsTag: 'SANDBOX / LEARNING',
+      moduleLabs: '道場 · Dojo',
+      moduleLabsTag: 'CTF / ISOLATED LABS',
       sourcePortswigger: 'Guided web security labs',
       sourceJuiceShop: 'Intentionally vulnerable training application',
       sourcePico: 'Beginner-friendly CTF challenges',
+      sourceTryHackMe: 'Guided practice in learning rooms',
+      sourceCtfTime: 'Calendar of public CTF competitions',
       sourceOverTheWire: 'Linux and security learning games',
-      moduleNotes: 'Field notes',
+      moduleNotes: '手記 · Notes',
       notesPlaceholder: 'A note for this session…',
       notesLocal: 'Saved only in this browser',
-      customLinksTag: 'YOUR TOOLBELT',
+      customLinksTag: 'PERSONAL LINKS',
       ipNote: 'Public IP lookup runs only on request via api.ipify.org.',
       toastDeleted: 'deleted',
       requiredFields: 'Name and address are required',
@@ -316,6 +340,7 @@
   /* ============ theme ============ */
 
   const THEME_KEY = 'hpTheme';
+  const KOWASU_DEFAULT_THEME = 'sumi';
   let themes = [];
   let defaultTheme = '';
 
@@ -365,7 +390,11 @@
   window.RyuThemeConfig.load()
     .then(function (config) {
       themes = config.themes;
-      defaultTheme = config.default;
+      defaultTheme = themes.some(function (item) {
+        return item.id === KOWASU_DEFAULT_THEME;
+      })
+        ? KOWASU_DEFAULT_THEME
+        : config.default;
       setTheme(currentTheme(), false);
       renderSettings();
     })
@@ -378,9 +407,14 @@
 
   const clockEl = $('#clock');
   const dateEl = $('#date');
+  const userAgentEl = $('#userAgentVal');
   const uptimeEl = $('#uptimeVal');
   const statusUptime = $('#st-up');
   const bootTime = Date.now();
+  if (userAgentEl) {
+    userAgentEl.textContent = navigator.userAgent;
+    userAgentEl.title = navigator.userAgent;
+  }
 
   function tick() {
     const now = new Date();
@@ -481,6 +515,13 @@
       name: 'GitHub',
       build: function (q) {
         return 'https://github.com/search?q=' + encodeURIComponent(q);
+      },
+    },
+    {
+      id: 'ctftime',
+      name: 'CTFtime',
+      build: function (q) {
+        return 'https://www.google.com/search?q=' + encodeURIComponent('site:ctftime.org ' + q);
       },
     },
   ];
@@ -1051,4 +1092,13 @@
   tick();
   if (q) q.focus();
   renderMirror();
+
+  if (readStore('hpAck') !== '1') {
+    toast(t('authorizedToast'));
+    try {
+      localStorage.setItem('hpAck', '1');
+    } catch (error) {
+      console.error('Unable to save the authorization reminder state:', error);
+    }
+  }
 })();

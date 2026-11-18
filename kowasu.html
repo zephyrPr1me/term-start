@@ -8,10 +8,7 @@
     <meta name="application-version" content="1.0.0" />
     <meta name="page-version" content="1.0.0" />
     <title>RYU · kowasu</title>
-    <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%230b0e0b'/%3E%3Crect x='3' y='3' width='7' height='10' fill='%2394c584'/%3E%3C/svg%3E"
-    />
+    <link rel="icon" type="image/svg+xml" href="assets/img/ryu-hanko.svg" />
     <link rel="stylesheet" href="assets/css/foundation.css" />
     <link rel="stylesheet" href="assets/css/search.css" />
     <link rel="stylesheet" href="assets/css/links.css" />
@@ -41,6 +38,14 @@
     />
     <link
       rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-jp@5/400.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-jp@5/500.css"
+    />
+    <link
+      rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@fontsource/fira-code@5/400.css"
     />
     <link rel="stylesheet" href="assets/css/interface.css" />
@@ -50,11 +55,11 @@
     <div class="wrap">
       <header id="masthead" class="workspace-head">
         <div class="workspace-identity">
-          <div class="workspace-mark" aria-hidden="true">R//K</div>
+          <img class="hanko" src="assets/img/ryu-hanko.svg" alt="RYU seal" />
           <div>
-            <div class="workspace-label" data-i18n="workspaceLabel">RESEARCH / DEFENSE</div>
+            <div class="workspace-label" data-i18n="workspaceLabel">CTF / AUTHORIZED LEARNING</div>
             <h1>KOWASU</h1>
-            <p data-i18n="workspaceIntro">A quiet desk for security research and defensive practice.</p>
+            <p data-i18n="workspaceIntro">Practice only in CTFs, your own labs, or with explicit permission.</p>
           </div>
         </div>
         <div id="clockbox">
@@ -88,7 +93,6 @@
           </div>
         </div>
       </header>
-
       <section class="panel" id="search-panel">
         <div class="panel-head">
           <span class="panel-title" data-i18n="search">поиск</span>
@@ -107,7 +111,7 @@
               autocomplete="off"
               autocapitalize="off"
               spellcheck="false"
-              placeholder="CVE, advisory, tool or query…"
+              placeholder="CTF, CVE, учебный запрос…"
               data-i18n-placeholder="searchPlaceholder"
               aria-label="Search"
               data-i18n-aria-label="search"
@@ -122,6 +126,7 @@
           <button type="button" class="chip" data-engine="nvd">nvd</button>
           <button type="button" class="chip" data-engine="cve">cve.org</button>
           <button type="button" class="chip" data-engine="github">gh · GitHub</button>
+          <button type="button" class="chip" data-engine="ctftime">ctf · CTFtime</button>
         </div>
         <div class="hint-row" data-i18n="searchHint">
           tab — engine · enter — search · / — focus · t — theme · ? — help
@@ -131,39 +136,39 @@
       <div class="content-grid kowasu-grid">
         <section class="panel module module-quicklinks" id="quick-links">
           <div class="panel-head">
-            <span class="panel-title" data-i18n="quickAccess">Быстрый доступ</span>
+            <span class="panel-title"><span class="module-title-jp">演習</span><span class="module-title-en">Practice</span></span>
             <span class="hr" aria-hidden="true"></span>
-            <span class="panel-tag" data-i18n="quickAccessTag">ЗАЩИТНЫЕ РЕСУРСЫ</span>
+            <span class="panel-tag" data-i18n="quickAccessTag">AUTHORIZED TRAINING</span>
           </div>
-          <nav class="quick-access-grid" aria-label="Security quick links" data-i18n-aria-label="quickAccess">
-            <a class="quick-access-link" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">
-              <span class="quick-access-index" aria-hidden="true">01</span>
-              <span class="quick-access-copy"><strong>CISA KEV</strong><small data-i18n="quickCisaDesc">Каталог активно используемых уязвимостей</small></span>
-              <span class="module-arrow" aria-hidden="true">↗</span>
-            </a>
-            <a class="quick-access-link" href="https://nvd.nist.gov/vuln/search" target="_blank" rel="noopener noreferrer">
-              <span class="quick-access-index" aria-hidden="true">02</span>
-              <span class="quick-access-copy"><strong>NVD</strong><small data-i18n="quickNvdDesc">Поиск CVE и оценка уязвимостей</small></span>
-              <span class="module-arrow" aria-hidden="true">↗</span>
-            </a>
+          <nav class="quick-access-grid" aria-label="Authorized training links" data-i18n-aria-label="quickAccess">
             <a class="quick-access-link" href="https://attack.mitre.org/" target="_blank" rel="noopener noreferrer">
-              <span class="quick-access-index" aria-hidden="true">03</span>
+              <span class="quick-access-index" aria-hidden="true">01</span>
               <span class="quick-access-copy"><strong>MITRE ATT&amp;CK</strong><small data-i18n="quickAttackDesc">Тактики, техники и меры защиты</small></span>
               <span class="module-arrow" aria-hidden="true">↗</span>
             </a>
-            <a class="quick-access-link" href="https://sigmahq.io/" target="_blank" rel="noopener noreferrer">
-              <span class="quick-access-index" aria-hidden="true">04</span>
-              <span class="quick-access-copy"><strong>Sigma HQ</strong><small data-i18n="quickSigmaDesc">Открытые правила обнаружения</small></span>
-              <span class="module-arrow" aria-hidden="true">↗</span>
-            </a>
-            <a class="quick-access-link" href="https://cheatsheetseries.owasp.org/" target="_blank" rel="noopener noreferrer">
-              <span class="quick-access-index" aria-hidden="true">05</span>
-              <span class="quick-access-copy"><strong>OWASP</strong><small data-i18n="quickOwaspDesc">Практики безопасной разработки</small></span>
-              <span class="module-arrow" aria-hidden="true">↗</span>
-            </a>
             <a class="quick-access-link" href="https://portswigger.net/web-security" target="_blank" rel="noopener noreferrer">
+              <span class="quick-access-index" aria-hidden="true">02</span>
+              <span class="quick-access-copy"><strong>PortSwigger Academy</strong><small data-i18n="quickPortswiggerDesc">Учебные лаборатории веб-безопасности</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="quick-access-link" href="https://academy.hackthebox.com/" target="_blank" rel="noopener noreferrer">
+              <span class="quick-access-index" aria-hidden="true">03</span>
+              <span class="quick-access-copy"><strong>Hack The Box Academy</strong><small data-i18n="quickHtbDesc">Практика в учебных лабораториях</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="quick-access-link" href="https://tryhackme.com/" target="_blank" rel="noopener noreferrer">
+              <span class="quick-access-index" aria-hidden="true">04</span>
+              <span class="quick-access-copy"><strong>TryHackMe</strong><small data-i18n="quickTryHackMeDesc">Задания в изолированных комнатах</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="quick-access-link" href="https://picoctf.org/" target="_blank" rel="noopener noreferrer">
+              <span class="quick-access-index" aria-hidden="true">05</span>
+              <span class="quick-access-copy"><strong>picoCTF</strong><small data-i18n="quickPicoDesc">Образовательные CTF-задачи</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="quick-access-link" href="https://ctftime.org/" target="_blank" rel="noopener noreferrer">
               <span class="quick-access-index" aria-hidden="true">06</span>
-              <span class="quick-access-copy"><strong>PortSwigger Academy</strong><small data-i18n="quickLabDesc">Безопасные практические лаборатории</small></span>
+              <span class="quick-access-copy"><strong>CTFtime</strong><small data-i18n="quickCtfTimeDesc">Календарь образовательных CTF</small></span>
               <span class="module-arrow" aria-hidden="true">↗</span>
             </a>
           </nav>
@@ -171,9 +176,9 @@
 
         <section class="panel module module-intel" id="intel-module">
           <div class="panel-head">
-            <span class="panel-title" data-i18n="moduleIntel">Threat intelligence</span>
+            <span class="panel-title"><span class="module-title-jp">資料</span><span class="module-title-en">Study</span></span>
             <span class="hr" aria-hidden="true"></span>
-            <span class="panel-tag" data-i18n="moduleIntelTag">ADVISORIES / CONTEXT</span>
+            <span class="panel-tag" data-i18n="moduleIntelTag">REFERENCES / CONTEXT</span>
           </div>
           <div class="module-links">
             <a class="module-link" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">
@@ -201,7 +206,7 @@
 
         <section class="panel module module-status" id="node-panel">
           <div class="panel-head">
-            <span class="panel-title" data-i18n="moduleStatus">Session status</span>
+            <span class="panel-title"><span class="module-title-jp">接続</span><span class="module-title-en">Session</span></span>
             <span class="hr" aria-hidden="true"></span>
             <span class="panel-tag">LOCAL</span>
           </div>
@@ -233,6 +238,10 @@
               <span class="node-label" data-i18n="engine">engine</span>
               <span class="node-value" id="node-engine">duckduckgo</span>
             </div>
+            <div class="node-row">
+              <span class="node-label" data-i18n="userAgent">браузер</span>
+              <span class="node-value" id="userAgentVal" title="User-Agent">—</span>
+            </div>
           </div>
           <div class="node-note" data-i18n="ipNote">
             Public IP lookup runs only when requested.
@@ -241,9 +250,9 @@
 
         <section class="panel module module-detection" id="detection-module">
           <div class="panel-head">
-            <span class="panel-title" data-i18n="moduleDetection">Detection engineering</span>
+            <span class="panel-title"><span class="module-title-jp">防御</span><span class="module-title-en">Defense</span></span>
             <span class="hr" aria-hidden="true"></span>
-            <span class="panel-tag" data-i18n="moduleDetectionTag">RULES / TELEMETRY</span>
+            <span class="panel-tag" data-i18n="moduleDetectionTag">RULES / VISIBILITY</span>
           </div>
           <div class="module-links">
             <a class="module-link" href="https://sigmahq.io/" target="_blank" rel="noopener noreferrer">
@@ -276,9 +285,9 @@
 
         <section class="panel module module-labs" id="labs-module">
           <div class="panel-head">
-            <span class="panel-title" data-i18n="moduleLabs">Practice labs</span>
+            <span class="panel-title"><span class="module-title-jp">道場</span><span class="module-title-en">Dojo</span></span>
             <span class="hr" aria-hidden="true"></span>
-            <span class="panel-tag" data-i18n="moduleLabsTag">SANDBOX / LEARN</span>
+            <span class="panel-tag" data-i18n="moduleLabsTag">CTF / ISOLATED LABS</span>
           </div>
           <div class="module-links">
             <a class="module-link" href="https://portswigger.net/web-security" target="_blank" rel="noopener noreferrer">
@@ -296,9 +305,19 @@
               <span class="module-copy"><strong>picoCTF</strong><small data-i18n="sourcePico">Beginner-friendly security challenges</small></span>
               <span class="module-arrow" aria-hidden="true">↗</span>
             </a>
-            <a class="module-link" href="https://overthewire.org/wargames/bandit/" target="_blank" rel="noopener noreferrer">
+            <a class="module-link" href="https://tryhackme.com/" target="_blank" rel="noopener noreferrer">
               <span class="module-index">04</span>
+              <span class="module-copy"><strong>TryHackMe</strong><small data-i18n="sourceTryHackMe">Guided rooms for authorized practice</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="module-link" href="https://overthewire.org/wargames/bandit/" target="_blank" rel="noopener noreferrer">
+              <span class="module-index">05</span>
               <span class="module-copy"><strong>OverTheWire</strong><small data-i18n="sourceOverTheWire">Linux and security learning games</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="module-link" href="https://ctftime.org/" target="_blank" rel="noopener noreferrer">
+              <span class="module-index">06</span>
+              <span class="module-copy"><strong>CTFtime</strong><small data-i18n="sourceCtfTime">Calendar of public CTF events</small></span>
               <span class="module-arrow" aria-hidden="true">↗</span>
             </a>
           </div>
@@ -306,7 +325,7 @@
 
         <section class="panel module module-notes" id="notes-module">
           <div class="panel-head">
-            <span class="panel-title" data-i18n="moduleNotes">Field notes</span>
+            <span class="panel-title"><span class="module-title-jp">手記</span><span class="module-title-en">Notes</span></span>
             <span class="hr" aria-hidden="true"></span>
             <span class="panel-tag">LOCAL / PRIVATE</span>
           </div>
@@ -327,9 +346,9 @@
 
         <section class="panel module module-custom" id="links-panel">
           <div class="panel-head">
-            <span class="panel-title" data-i18n="customLinks">Pinned resources</span>
+            <span class="panel-title"><span class="module-title-jp">書庫</span><span class="module-title-en">Library</span></span>
             <span class="hr" aria-hidden="true"></span>
-            <span class="panel-tag" data-i18n="customLinksTag">YOUR TOOLBELT</span>
+            <span class="panel-tag" data-i18n="customLinksTag">YOUR PERSONAL LINKS</span>
           </div>
           <div class="links" id="custom-links"></div>
           <form id="custom-form" class="custom-form">
@@ -384,7 +403,7 @@
         <span class="st-sep">│</span>
         <span class="st-seg" id="st-up">up 0:00</span>
       </div>
-      <div class="st-right" data-i18n="statusHelp">/ поиск · t тема · ? помощь</div>
+      <div class="st-right" data-i18n="authorizedStatus">только разрешённые лаборатории</div>
     </footer>
 
     <dialog
@@ -517,6 +536,12 @@
           ><button type="button" class="btn overlay-close">esc</button>
         </div>
         <div class="dialog-body">
+          <section class="authorized-disclaimer">
+            <strong lang="ja">許可なく標的を攻撃するな。</strong>
+            <p data-i18n="authorizedDisclaimer">
+              Не атакуйте цели без разрешения. Практикуйтесь только на CTF-платформах, в своих лабораториях или с явным разрешением.
+            </p>
+          </section>
           <h3 data-i18n="search">поиск</h3>
           <table>
             <tr><td>d</td><td data-i18n="helpDdg">DuckDuckGo — обычный веб-поиск</td></tr>
@@ -524,6 +549,7 @@
             <tr><td>NVD</td><td data-i18n="helpNvd">поиск записей в базе уязвимостей NVD</td></tr>
             <tr><td>CVE.org</td><td data-i18n="helpCve">поиск идентификаторов CVE</td></tr>
             <tr><td>github</td><td data-i18n="helpGithub">код, инструменты, конфиги</td></tr>
+            <tr><td>CTFtime</td><td data-i18n="helpCtfTime">поиск учебных соревнований и задач</td></tr>
           </table>
           <h3 data-i18n="hotkeys">горячие клавиши</h3>
           <table>
