@@ -46,7 +46,15 @@ export function loadObsidianConfig() {
 }
 
 export function saveObsidianConfig(config) {
-  localStorage.setItem(KEY, JSON.stringify(config));
+  const source = config && typeof config === 'object' && !Array.isArray(config) ? config : {};
+  localStorage.setItem(
+    KEY,
+    JSON.stringify({
+      ...source,
+      vault: typeof source.vault === 'string' ? source.vault : '',
+      enabled: source.enabled === true,
+    }),
+  );
 }
 
 export const OBSIDIAN_ACTIONS = {

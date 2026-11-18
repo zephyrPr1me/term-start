@@ -1,4 +1,9 @@
-import { launchObsidianUri } from './obsidian-bridge.js';
+import {
+  launchObsidianUri,
+  loadObsidianConfig,
+  saveObsidianConfig,
+} from './obsidian-bridge.js';
+import { ProfileStore } from './profile-store.js';
 
 /* RYU · tateru — search, shortcuts, bookmarks, and settings.
    storage: localStorage key "termstart.v1"
@@ -474,6 +479,7 @@ const TRANSLATIONS = {
     importConfig: 'Импорт конфигурации',
     configExported: 'Конфигурация экспортирована со снимком настроек.',
     configImported: 'Конфигурация и город погоды восстановлены.',
+    profileConfigFailed: 'Не удалось восстановить настройки профиля.',
     configIncompatible: 'Несовместимая версия приложения или страницы.',
     configInvalid: 'Файл конфигурации повреждён или имеет неверный формат.',
     screenshotFailed: 'Не удалось создать снимок настроек.',
@@ -656,6 +662,7 @@ const TRANSLATIONS = {
     importConfig: 'Import configuration',
     configExported: 'Configuration exported with settings screenshot.',
     configImported: 'Configuration and weather city restored.',
+    profileConfigFailed: 'Could not restore profile settings.',
     configIncompatible: 'Incompatible application or page version.',
     configInvalid: 'Configuration file is damaged or has an invalid format.',
     screenshotFailed: 'Could not capture settings screenshot.',
@@ -2229,6 +2236,8 @@ async function exportBackup() {
     pageVersion: PAGE_VERSION,
     exportedAt: new Date().toISOString(),
     settings: JSON.parse(JSON.stringify(settings)),
+    obsidian: loadObsidianConfig(),
+    profile: ProfileStore.load(),
     settingsScreenshot: {
       mimeType: 'image/svg+xml',
       dataUrl: settingsScreenshot,
@@ -2250,6 +2259,65 @@ function applyImportedSettings(importedSettings) {
   renderAll();
   renderHelp();
   initializeWeather();
+}
+
+function validOptionalBackupSettings(data) {
+  if (
+    Object.prototype.hasOwnProperty.call(data, 'obsidian') &&
+    (!data.obsidian ||
+      typeof data.obsidian !== 'object' ||
+      Array.isArray(data.obsidian) ||
+      typeof data.obsidian.vault !== 'string' ||
+      typeof data.obsidian.enabled !== 'boolean')
+  ) {
+    return false;
+  }
+  if (
+    Object.prototype.hasOwnProperty.call(data, 'profile') &&
+    (!data.profile || typeof data.profile !== 'object' || Array.isArray(data.profile))
+  ) {
+    return false;
+  }
+  return true;
+}
+
+function applyOptionalBackupSettings(data) {
+  const hasObsidian = Object.prototype.hasOwnProperty.call(data, 'obsidian');
+  const hasProfile = Object.prototype.hasOwnProperty.call(data, 'profile');
+  if (!hasObsidian && !hasProfile) return true;
+
+  try {
+    if (hasProfile) ProfileStore.save(data.profile);
+    if (hasObsidian) {
+      saveObsidianConfig(data.obsidian);
+      if (!hasProfile) {
+        ProfileStore.patch({
+          vault: data.obsidian.vault,
+          obsidianEnabled: data.obsidian.enabled,
+        });
+      }
+    }
+
+    const profile = ProfileStore.load();
+    const obsidian = loadObsidianConfig();
+    if (profile.vault) {
+      saveObsidianConfig({
+        ...obsidian,
+        vault: profile.vault,
+        enabled: profile.obsidianEnabled,
+      });
+    } else if (obsidian.vault) {
+      ProfileStore.patch({
+        vault: obsidian.vault,
+        obsidianEnabled: obsidian.enabled,
+      });
+    }
+    return true;
+  } catch (error) {
+    console.error('Unable to restore profile settings:', error);
+    toast(t('profileConfigFailed'), true);
+    return false;
+  }
 }
 
 function restoreBackup(file) {
@@ -2284,7 +2352,12 @@ function restoreBackup(file) {
           toast(t('configInvalid'), true);
           return;
         }
+        if (!validOptionalBackupSettings(data)) {
+          toast(t('configInvalid'), true);
+          return;
+        }
         applyImportedSettings(data.settings);
+        if (!applyOptionalBackupSettings(data)) return;
         toast(t('configImported'));
         return;
       }
@@ -2296,7 +2369,12 @@ function restoreBackup(file) {
         toast(t('configIncompatible'), true);
         return;
       }
+      if (!validOptionalBackupSettings(data)) {
+        toast(t('configInvalid'), true);
+        return;
+      }
       applyImportedSettings(data.settings);
+      if (!applyOptionalBackupSettings(data)) return;
       toast(t('configImported'));
     } catch (e) {
       toast(t('configInvalid'), true);
