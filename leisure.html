@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="application-name" content="RYU" />
+    <meta
+      name="description"
+      content="Терминальное пространство RYU для отдыха, развлечений и короткой передышки."
+    />
+    <title>RYU · off-duty</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%230b0e0b'/%3E%3Crect x='3' y='3' width='7' height='10' fill='%2394c584'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="assets/css/foundation.css" />
+    <link rel="stylesheet" href="assets/css/links.css" />
+    <link rel="stylesheet" href="assets/css/interface.css" />
+    <link rel="stylesheet" href="assets/css/leisure.css" />
+  </head>
+  <body class="leisure">
+    <div class="wrap">
+      <header id="masthead" class="leisure-head">
+        <div class="leisure-identity">
+          <div class="leisure-mark" aria-hidden="true">R//R</div>
+          <div>
+            <div class="leisure-label">PAUSE / LEISURE</div>
+            <h1>OFF-DUTY</h1>
+            <p>Территория без задач и дедлайнов.</p>
+          </div>
+        </div>
+        <div id="clockbox">
+          <div id="clock" aria-live="off">00:00:00</div>
+          <div id="date">&nbsp;</div>
+          <nav id="head-actions" aria-label="Быстрое переключение страниц">
+            <a class="btn" href="index.html" title="Страница Tateru">tateru</a>
+            <a class="btn" href="hack.html" title="Страница Kowasu">kowasu</a>
+          </nav>
+        </div>
+      </header>
+
+      <main class="leisure-main">
+        <section class="panel leisure-panel" aria-labelledby="workspace-title">
+          <div class="panel-head">
+            <h2 class="panel-title" id="workspace-title">пространства</h2>
+            <span class="hr" aria-hidden="true"></span>
+            <span class="panel-tag">ctrl+enter — следующее</span>
+          </div>
+          <nav class="links leisure-workspaces" aria-label="Страницы RYU">
+            <a class="link workspace-link" href="index.html">
+              <span class="lk-icon-fallback" aria-hidden="true">T</span>
+              <span class="workspace-copy">
+                <span class="lk-name">Tateru</span>
+                <span class="workspace-description">инструменты разработки</span>
+              </span>
+              <span class="workspace-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="link workspace-link" href="hack.html">
+              <span class="lk-icon-fallback" aria-hidden="true">K</span>
+              <span class="workspace-copy">
+                <span class="lk-name">Kowasu</span>
+                <span class="workspace-description">защитные практики</span>
+              </span>
+              <span class="workspace-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="link workspace-link is-current" href="leisure.html" aria-current="page">
+              <span class="lk-icon-fallback" aria-hidden="true">R</span>
+              <span class="workspace-copy">
+                <span class="lk-name">Off-Duty</span>
+                <span class="workspace-description">отдых и развлечения</span>
+              </span>
+              <span class="workspace-arrow" aria-hidden="true">●</span>
+            </a>
+          </nav>
+        </section>
+
+        <section class="panel leisure-panel" aria-labelledby="links-title">
+          <div class="panel-head">
+            <h2 class="panel-title" id="links-title">быстрые ссылки</h2>
+            <span class="hr" aria-hidden="true"></span>
+            <span class="panel-tag">клавиши 1–4</span>
+          </div>
+          <div class="links leisure-links">
+            <a
+              class="link"
+              href="https://www.kinopoisk.ru/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-hotkey="1"
+            >
+              <span class="lk-key">1</span>
+              <span class="lk-icon-fallback" aria-hidden="true">К</span>
+              <span class="lk-name">Кинопоиск</span>
+              <span class="link-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a
+              class="link"
+              href="https://music.youtube.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-hotkey="2"
+            >
+              <span class="lk-key">2</span>
+              <span class="lk-icon-fallback" aria-hidden="true">♫</span>
+              <span class="lk-name">YouTube Music</span>
+              <span class="link-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a
+              class="link"
+              href="https://www.litres.ru/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-hotkey="3"
+            >
+              <span class="lk-key">3</span>
+              <span class="lk-icon-fallback" aria-hidden="true">Ч</span>
+              <span class="lk-name">Литрес</span>
+              <span class="link-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a
+              class="link"
+              href="https://itch.io/games/free"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-hotkey="4"
+            >
+              <span class="lk-key">4</span>
+              <span class="lk-icon-fallback" aria-hidden="true">И</span>
+              <span class="lk-name">itch.io · игры</span>
+              <span class="link-arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </section>
+
+        <section class="panel leisure-panel leisure-break" aria-labelledby="breather-title">
+          <div class="panel-head">
+            <h2 class="panel-title" id="breather-title">передышка</h2>
+            <span class="hr" aria-hidden="true"></span>
+            <span class="panel-tag">60 секунд</span>
+          </div>
+          <div class="breather-content">
+            <div>
+              <p class="breather-message">Можно ничего не успевать.</p>
+              <p class="breather-hint">Минута спокойного дыхания — только если хочется.</p>
+            </div>
+            <div class="breather-controls">
+              <span id="breath-status" aria-live="polite">готов к паузе</span>
+              <button class="btn" id="breath-button" type="button">начать</button>
+            </div>
+          </div>
+          <div class="breath-track" aria-hidden="true">
+            <span id="breath-progress"></span>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="statusline">
+      <div class="st-left">
+        <span class="st-seg">RYU / OFF-DUTY</span>
+        <span class="st-sep">│</span>
+        <span class="st-seg">1–4 развлечения</span>
+        <span class="st-sep">│</span>
+        <span class="st-seg">ctrl+enter страницы</span>
+      </div>
+      <span class="st-right">отдыхай в своём темпе</span>
+    </div>
+
+    <script type="module" src="assets/js/theme-loader.js"></script>
+    <script type="module" src="assets/js/page-switch.js"></script>
+    <script type="module" src="assets/js/leisure.js"></script>
+  </body>
+</html>

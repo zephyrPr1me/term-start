@@ -1,0 +1,292 @@
+/* RYU · terminal-style leisure workspace. */
+
+.leisure {
+  --leisure-glow: color-mix(in srgb, var(--accent) 12%, transparent);
+  background:
+    radial-gradient(ellipse at 50% 0, var(--leisure-glow), transparent 38rem),
+    var(--bg);
+}
+
+.leisure .wrap {
+  max-width: 920px;
+}
+
+.leisure-head {
+  align-items: center !important;
+  justify-content: space-between !important;
+  text-align: left;
+}
+
+.leisure-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.leisure-mark {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  place-items: center;
+  border: var(--border-w) var(--border-style) var(--accent);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.leisure-label {
+  color: var(--accent2);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+}
+
+.leisure-identity h1 {
+  margin: 0;
+  color: var(--fg);
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.leisure-identity p {
+  margin: 3px 0 0;
+  color: var(--fg-dim);
+  font-size: 11px;
+}
+
+.leisure-head #clockbox {
+  text-align: right;
+}
+
+.leisure-head #clock {
+  font-size: 20px;
+}
+
+.leisure-head #date {
+  margin-bottom: 5px;
+}
+
+.leisure-head #head-actions {
+  justify-content: flex-end;
+}
+
+.leisure-head #head-actions .btn {
+  text-decoration: none;
+}
+
+.leisure-main {
+  display: grid;
+  gap: 12px;
+}
+
+.leisure-panel {
+  min-width: 0;
+}
+
+.leisure-panel .panel-head {
+  margin-bottom: 10px;
+}
+
+.leisure-panel .panel-title {
+  margin: 0;
+  font: inherit;
+}
+
+.leisure-workspaces {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.workspace-link {
+  min-width: 0;
+}
+
+.workspace-copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.workspace-link .lk-name {
+  color: var(--fg);
+  font-weight: 700;
+}
+
+.workspace-description {
+  overflow: hidden;
+  color: var(--fg-dim);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workspace-arrow,
+.link-arrow {
+  margin-left: auto;
+  color: var(--fg-mute);
+}
+
+.workspace-link:hover .workspace-arrow,
+.leisure-links .link:hover .link-arrow {
+  color: var(--accent);
+}
+
+.workspace-link.is-current {
+  border-color: var(--accent);
+  background: var(--bg-panel);
+}
+
+.workspace-link.is-current .lk-icon-fallback {
+  background: var(--accent);
+  color: var(--status-fg);
+}
+
+.leisure-links {
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+}
+
+.leisure-links .link {
+  min-width: 0;
+}
+
+.leisure-links .lk-key {
+  text-align: center;
+}
+
+.leisure-links .link-arrow {
+  transition:
+    color 120ms ease,
+    transform 120ms ease;
+}
+
+.leisure-links .link:hover .link-arrow {
+  transform: translate(1px, -1px);
+}
+
+.breather-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.breather-message {
+  margin: 0;
+  color: var(--fg);
+  font-size: 15px;
+}
+
+.breather-hint {
+  margin: 3px 0 0;
+  color: var(--fg-dim);
+  font-size: 11px;
+}
+
+.breather-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--accent2);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.breath-track {
+  height: 3px;
+  margin-top: 12px;
+  overflow: hidden;
+  background: var(--bg-inset);
+}
+
+.breath-track span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--accent);
+  transition: width 1s linear;
+}
+
+.leisure-break.is-active .breath-track span {
+  width: 100%;
+}
+
+.leisure-break.is-active.is-exhale .breath-track span {
+  background: var(--accent2);
+}
+
+@media (max-width: 620px) {
+  .leisure .wrap {
+    padding-top: 14px;
+  }
+
+  .leisure-head {
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .leisure-mark {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+  }
+
+  .leisure-identity h1 {
+    font-size: 20px;
+  }
+
+  .leisure-identity p {
+    max-width: 230px;
+  }
+
+  .leisure-head #clock {
+    font-size: 16px;
+  }
+
+  .leisure-head #date {
+    font-size: 10px;
+  }
+
+  .leisure-head #head-actions .btn {
+    padding: 2px 5px;
+    font-size: 10px;
+  }
+
+  .leisure-workspaces {
+    grid-template-columns: 1fr;
+  }
+
+  .breather-content {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .breather-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  #statusline {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 420px) {
+  .leisure-head {
+    align-items: flex-start !important;
+    flex-direction: column;
+  }
+
+  .leisure-head #clockbox {
+    width: 100%;
+    text-align: left;
+  }
+
+  .leisure-head #head-actions {
+    justify-content: flex-start;
+  }
+
+  .leisure-links {
+    grid-template-columns: 1fr;
+  }
+}

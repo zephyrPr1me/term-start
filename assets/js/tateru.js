@@ -1,4 +1,4 @@
-/* term·start — terminal-style start page
+/* RYU · tateru — search, shortcuts, bookmarks, and settings.
    storage: localStorage key "termstart.v1"
    bangs:   !g google · !d ddg · !yt youtube · !w wikipedia · … (см. ENGINES) */
 
@@ -82,12 +82,6 @@ const ENGINES = [
   },
   { id: 'habr', name: 'Хабр', bang: 'h', url: 'https://habr.com/ru/search/?q=%s' },
   {
-    id: 'cinemate',
-    name: 'Кинопоиск',
-    bang: 'kp',
-    url: 'https://www.kinopoisk.ru/index.php?what_film=1&kp_query=%s',
-  },
-  {
     id: 'wiki-en',
     name: 'Wikipedia EN',
     bang: 'wen',
@@ -125,8 +119,6 @@ const ENGINES = [
   },
   { id: 'grep-app', name: 'grep.app', bang: 'gp', url: 'https://grep.app/search?q=%s' },
   { id: 'hn', name: 'Hacker News', bang: 'hn', url: 'https://hn.algolia.com/?q=%s' },
-  { id: 'amazon', name: 'Amazon', bang: 'am', url: 'https://www.amazon.com/s?k=%s' },
-  { id: 'ozon', name: 'Ozon', bang: 'oz', url: 'https://www.ozon.ru/search/?text=%s' },
 ];
 
 /* ============ helpers ============ */
@@ -137,31 +129,40 @@ const $$ = (sel) => [...document.querySelectorAll(sel)];
 const DEFAULT_LINKS = [
   { name: 'github', url: 'https://github.com', group: 'dev' },
   { name: 'gitlab', url: 'https://gitlab.com', group: 'dev' },
+  { name: 'codeberg', url: 'https://codeberg.org', group: 'dev' },
   { name: 'stack overflow', url: 'https://stackoverflow.com', group: 'dev' },
-  { name: 'mdn', url: 'https://developer.mozilla.org', group: 'dev' },
   { name: 'npm', url: 'https://www.npmjs.com', group: 'dev' },
-  { name: 'codepen', url: 'https://codepen.io', group: 'dev' },
+  { name: 'jsdelivr', url: 'https://www.jsdelivr.com', group: 'dev' },
   { name: 'caniuse', url: 'https://caniuse.com', group: 'dev' },
-  { name: 'wikipedia', url: 'https://ru.wikipedia.org', group: 'learn' },
-  { name: 'google scholar', url: 'https://scholar.google.com', group: 'learn' },
-  { name: 'hacker news', url: 'https://news.ycombinator.com', group: 'learn' },
-  { name: 'reddit', url: 'https://reddit.com', group: 'learn' },
-  { name: 'habr', url: 'https://habr.com', group: 'learn' },
-  { name: 'wayback', url: 'https://web.archive.org', group: 'learn' },
-  { name: 'gmail', url: 'https://mail.google.com', group: 'work' },
-  { name: 'drive', url: 'https://drive.google.com', group: 'work' },
-  { name: 'calendar', url: 'https://calendar.google.com', group: 'work' },
-  { name: 'notion', url: 'https://www.notion.so', group: 'work' },
-  { name: 'youtube', url: 'https://youtube.com', group: 'media' },
-  { name: 'spotify', url: 'https://open.spotify.com', group: 'media' },
-  { name: 'kinopoisk', url: 'https://www.kinopoisk.ru', group: 'media' },
-  { name: 'xkcd', url: 'https://xkcd.com', group: 'media' },
-  { name: 'ozon', url: 'https://www.ozon.ru', group: 'shop' },
-  { name: 'wildberries', url: 'https://www.wildberries.ru', group: 'shop' },
+  { name: 'codepen', url: 'https://codepen.io', group: 'dev' },
+  { name: 'codesandbox', url: 'https://codesandbox.io', group: 'dev' },
+  { name: 'stackblitz', url: 'https://stackblitz.com', group: 'dev' },
+  { name: 'mdn', url: 'https://developer.mozilla.org', group: 'learn' },
+  { name: 'devdocs', url: 'https://devdocs.io', group: 'learn' },
+  { name: 'typescript', url: 'https://www.typescriptlang.org/docs', group: 'learn' },
+  { name: 'node.js', url: 'https://nodejs.org/docs/latest/api', group: 'learn' },
+  { name: 'react', url: 'https://react.dev', group: 'learn' },
+  { name: 'vite', url: 'https://vite.dev/guide', group: 'learn' },
+  { name: 'web.dev', url: 'https://web.dev', group: 'learn' },
+  { name: 'chrome developers', url: 'https://developer.chrome.com', group: 'learn' },
+  { name: 'css-tricks', url: 'https://css-tricks.com', group: 'learn' },
+  { name: 'freeCodeCamp', url: 'https://www.freecodecamp.org', group: 'learn' },
 ];
 
+const LEGACY_NON_DEV_LINK_URLS = new Set([
+  'https://calendar.google.com',
+  'https://www.kinopoisk.ru',
+  'https://www.ozon.ru',
+  'https://www.wildberries.ru',
+]);
+
+let THEMES = [];
+const BORDER_STYLES = ['solid', 'dashed', 'double'];
+const BOOKMARK_VIEWS = ['all', 'favorites', 'recent'];
+const ENGINE_CHIPS = ['google', 'ddg', 'wikipedia', 'youtube', 'github', 'habr'];
+
 const DEFAULT_SETTINGS = {
-  theme: 'phosphor',
+  theme: '',
   borders: 'solid',
   engine: 'google',
   language: 'ru',
@@ -208,10 +209,111 @@ let settings = { ...DEFAULT_SETTINGS };
 const APP_VERSION = $('meta[name="application-version"]').content;
 const PAGE_VERSION = $('meta[name="page-version"]').content;
 
+/* ============ settings validation ============ */
+
+function isNonEmptyString(value) {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+function sanitizeLink(link) {
+  if (!link || typeof link !== 'object') return null;
+  if (!isNonEmptyString(link.name) || !isNonEmptyString(link.url)) return null;
+  const clean = { name: link.name.trim(), url: link.url.trim() };
+  if (isNonEmptyString(link.group)) clean.group = link.group.trim();
+  if (isNonEmptyString(link.key)) clean.key = link.key.trim().slice(0, 1).toLowerCase();
+  return clean;
+}
+
+function sanitizeBookmarkItem(item) {
+  if (!item || typeof item !== 'object') return null;
+  if (!isNonEmptyString(item.name) || !isNonEmptyString(item.url)) return null;
+  const clean = { name: item.name.trim(), url: item.url.trim() };
+  if (typeof item.addedAt === 'number' && Number.isFinite(item.addedAt))
+    clean.addedAt = item.addedAt;
+  if (item.favorite === true) clean.favorite = true;
+  return clean;
+}
+
+function sanitizeBookmarks(bookmarks) {
+  if (!bookmarks || typeof bookmarks !== 'object' || !Array.isArray(bookmarks.folders))
+    return null;
+  return {
+    folders: bookmarks.folders
+      .filter((folder) => folder && typeof folder === 'object' && isNonEmptyString(folder.name))
+      .map((folder) => ({
+        name: folder.name.trim(),
+        items: Array.isArray(folder.items)
+          ? folder.items.map(sanitizeBookmarkItem).filter(Boolean)
+          : [],
+      })),
+  };
+}
+
+/* приводит сохранённые/импортированные настройки к безопасному виду */
+function sanitizeSettings(raw) {
+  const source = raw && typeof raw === 'object' ? raw : {};
+  const next = { ...DEFAULT_SETTINGS, ...source };
+
+  next.theme = THEMES.some((theme) => theme.id === next.theme)
+    ? next.theme
+    : DEFAULT_SETTINGS.theme;
+  next.borders = BORDER_STYLES.includes(next.borders)
+    ? next.borders
+    : DEFAULT_SETTINGS.borders;
+  next.engine = ENGINES.some((engine) => engine.id === next.engine)
+    ? next.engine
+    : DEFAULT_SETTINGS.engine;
+  next.language = next.language === 'en' ? 'en' : 'ru';
+  next.font =
+    Object.keys(FONT_STACKS).includes(next.font) || next.font === 'custom'
+      ? next.font
+      : DEFAULT_SETTINGS.font;
+  next.fontCustom = isNonEmptyString(next.fontCustom) ? next.fontCustom.trim() : '';
+  next.bgColor = isNonEmptyString(next.bgColor) ? next.bgColor.trim() : '';
+  next.bgImage = isNonEmptyString(next.bgImage) ? next.bgImage.trim() : '';
+  const dim = Number(next.bgDim);
+  next.bgDim = Number.isFinite(dim)
+    ? Math.min(Math.max(dim, 0), 0.95)
+    : DEFAULT_SETTINGS.bgDim;
+  next.weatherLocation = isNonEmptyString(next.weatherLocation)
+    ? next.weatherLocation.trim()
+    : '';
+  next.bookmarkView = BOOKMARK_VIEWS.includes(next.bookmarkView)
+    ? next.bookmarkView
+    : DEFAULT_SETTINGS.bookmarkView;
+  next.links = Array.isArray(next.links)
+    ? next.links
+        .map(sanitizeLink)
+        .filter(Boolean)
+        .filter((link) => !LEGACY_NON_DEV_LINK_URLS.has(link.url.replace(/\/+$/, '')))
+    : null;
+  next.bookmarks = sanitizeBookmarks(next.bookmarks);
+
+  for (const key of [
+    'suggestBookmarks',
+    'suggestLinks',
+    'suggestEngines',
+    'clock24',
+    'openNewTab',
+    'showBookmarks',
+    'showLinks',
+  ]) {
+    if (typeof next[key] !== 'boolean') next[key] = DEFAULT_SETTINGS[key];
+  }
+
+  const collapsed = Array.isArray(source.bookmarkCollapsed)
+    ? source.bookmarkCollapsed.filter((name) => typeof name === 'string')
+    : null;
+  next.bookmarkCollapsed =
+    collapsed ??
+    (next.bookmarks?.folders || []).map((folder) => folder.name);
+
+  return next;
+}
+
 const TRANSLATIONS = {
   ru: {
-    appTitle: 'term·start',
-    asciiSubtitle: '│ поиск · ссылки · закладки · погода',
+    appTitle: 'RYU · tateru',
     language: 'Язык интерфейса',
     command: ':cmd',
     quickActionsTitle: 'Быстрые действия (ctrl+k)',
@@ -224,13 +326,13 @@ const TRANSLATIONS = {
     importBookmarksTitle: 'Импорт закладок (i)',
     settings: 'Настройки (ctrl+,)',
     help: 'Помощь (?)',
-    hackButton: '↯hack',
-    hackTitle: 'Открыть hack.html в этой же вкладке',
+    hackButton: '壊す kowasu',
+    hackTitle: 'Открыть режим Kowasu (CTF/кибербез)',
     search: 'поиск',
     searchPlaceholder: 'поиск, url, !bang или :команда…',
     searchAria: 'Строка поиска',
     searchHint:
-      'tab — движок · !bang — разовый поиск · enter — искать · ctrl+enter — новая вкладка · : — команды',
+      'tab — движок · !bang — разовый поиск · enter — искать · ctrl+enter — сменить страницу · : — команды',
     quickLinks: 'быстрые ссылки',
     keyRange: 'клавиши 1–9',
     edit: 'править',
@@ -279,7 +381,6 @@ const TRANSLATIONS = {
     categoryMedia: 'медиа',
     categoryShop: 'покупки',
     noBookmarks: '// закладок нет — нажмите [ импорт ] и выберите bookmarks.html',
-    noBookmarksMatch: '// ничего не найдено по',
     items: 'шт.',
     none: 'нет',
     uptime: 'в работе',
@@ -362,6 +463,7 @@ const TRANSLATIONS = {
     settingSuggestEngines: 'подсказки !bang движков',
     settingShowLinks: 'показывать блок быстрых ссылок',
     settingShowBookmarks: 'показывать блок закладок',
+    settingClock24: '24-часовой формат времени',
     settingsFoot:
       'изменения применяются сразу · конфигурация включает все настройки и снимок этой панели',
     exportConfig: 'Экспорт конфигурации',
@@ -371,10 +473,27 @@ const TRANSLATIONS = {
     configIncompatible: 'Несовместимая версия приложения или страницы.',
     configInvalid: 'Файл конфигурации повреждён или имеет неверный формат.',
     screenshotFailed: 'Не удалось создать снимок настроек.',
+    toastEngine: 'движок',
+    toastTheme: 'тема',
+    toastDeleted: 'удалено',
+    toastGroup: 'группа',
+    toastEnterQuery: 'введите поисковый запрос',
+    toastBookmarksEmptyFile: 'закладок в файле не найдено',
+    toastBookmarksImported: 'импортировано',
+    toastFolders: 'папок',
+    toastParseFailed: 'не удалось разобрать файл',
+    toastBookmarksCleared: 'закладки удалены',
+    toastNoBookmarks: 'закладок и так нет',
+    toastSettingsReset: 'настройки сброшены',
+    toastNewTab: 'новая вкладка',
+    toastOn: 'вкл',
+    toastOff: 'выкл',
+    toastUnknownCommand: 'неизвестная команда',
+    dropHint: '⇪ отпустите файл закладок (.html) или конфигурации (.json)',
+    palettePlaceholder: 'команда…',
   },
   en: {
-    appTitle: 'term·start',
-    asciiSubtitle: '│ search · links · bookmarks · weather',
+    appTitle: 'RYU · tateru',
     language: 'Interface language',
     command: ':cmd',
     quickActionsTitle: 'Quick actions (ctrl+k)',
@@ -387,13 +506,13 @@ const TRANSLATIONS = {
     importBookmarksTitle: 'Import bookmarks (i)',
     settings: 'Settings (ctrl+,)',
     help: 'Help (?)',
-    hackButton: '↯hack',
-    hackTitle: 'Open hack.html in this tab',
+    hackButton: '壊す kowasu',
+    hackTitle: 'Open Kowasu mode (CTF/security)',
     search: 'search',
     searchPlaceholder: 'search, url, !bang or :command…',
     searchAria: 'Search field',
     searchHint:
-      'tab — engine · !bang — one-off search · enter — search · ctrl+enter — new tab · : — commands',
+      'tab — engine · !bang — one-off search · enter — search · ctrl+enter — switch page · : — commands',
     quickLinks: 'quick links',
     keyRange: 'keys 1–9',
     edit: 'edit',
@@ -442,7 +561,6 @@ const TRANSLATIONS = {
     categoryMedia: 'media',
     categoryShop: 'shopping',
     noBookmarks: '// no bookmarks — choose an exported bookmarks.html file',
-    noBookmarksMatch: '// no matches for',
     items: 'items',
     none: 'none',
     uptime: 'up',
@@ -525,6 +643,7 @@ const TRANSLATIONS = {
     settingSuggestEngines: '!bang engine suggestions',
     settingShowLinks: 'show quick links',
     settingShowBookmarks: 'show bookmarks',
+    settingClock24: '24-hour clock',
     settingsFoot:
       'Changes apply immediately · the configuration includes all settings and a snapshot of this panel',
     exportConfig: 'Export configuration',
@@ -534,6 +653,24 @@ const TRANSLATIONS = {
     configIncompatible: 'Incompatible application or page version.',
     configInvalid: 'Configuration file is damaged or has an invalid format.',
     screenshotFailed: 'Could not capture settings screenshot.',
+    toastEngine: 'engine',
+    toastTheme: 'theme',
+    toastDeleted: 'deleted',
+    toastGroup: 'group',
+    toastEnterQuery: 'enter a search query',
+    toastBookmarksEmptyFile: 'no bookmarks found in that file',
+    toastBookmarksImported: 'imported',
+    toastFolders: 'folders',
+    toastParseFailed: 'could not parse that file',
+    toastBookmarksCleared: 'bookmarks removed',
+    toastNoBookmarks: 'there are no bookmarks',
+    toastSettingsReset: 'settings reset',
+    toastNewTab: 'new tab',
+    toastOn: 'on',
+    toastOff: 'off',
+    toastUnknownCommand: 'unknown command',
+    dropHint: '⇪ drop a bookmarks file (.html) or a configuration file (.json)',
+    palettePlaceholder: 'command…',
   },
 };
 
@@ -560,6 +697,8 @@ function applyLanguage() {
   $$('.language-option').forEach((button) => {
     button.setAttribute('aria-pressed', String(button.dataset.language === language));
   });
+  const weatherStatus = $('#weather-status');
+  if (weatherStatus && weatherStatusKey) weatherStatus.textContent = t(weatherStatusKey);
 }
 
 function setLanguage(language) {
@@ -568,6 +707,7 @@ function setLanguage(language) {
   save();
   renderAll();
   renderHelp();
+  updateAdvancedPreview();
   renderWeatherSnapshot();
   tick();
 }
@@ -575,18 +715,7 @@ function setLanguage(language) {
 function load() {
   try {
     const raw = localStorage.getItem('termstart.v1');
-    if (raw) {
-      const stored = JSON.parse(raw);
-      settings = { ...DEFAULT_SETTINGS, ...stored };
-      if (!Array.isArray(stored.bookmarkCollapsed)) {
-        settings.bookmarkCollapsed = (settings.bookmarks?.folders || []).map(
-          (folder) => folder.name,
-        );
-      }
-    }
-    if (!['ru', 'en'].includes(settings.language)) settings.language = 'ru';
-    if (!['all', 'favorites', 'recent'].includes(settings.bookmarkView))
-      settings.bookmarkView = 'all';
+    if (raw) settings = sanitizeSettings(JSON.parse(raw));
   } catch (e) {
     /* first run or corrupted — use defaults */
   }
@@ -602,21 +731,28 @@ function engineById(id) {
 /* применить шрифт и фон из настроек к странице */
 function applyCustomization() {
   const root = document.documentElement;
+  const customFont =
+    typeof settings.fontCustom === 'string' ? settings.fontCustom.trim() : '';
   const stack =
-    settings.font === 'custom' && settings.fontCustom.trim()
-      ? `"${settings.fontCustom.trim().replace(/"/g, '')}", ` + FONT_STACKS.system
+    settings.font === 'custom' && customFont
+      ? `"${customFont.replace(/"/g, '')}", ` + FONT_STACKS.system
       : FONT_STACKS[settings.font] || FONT_STACKS.system;
   root.style.setProperty('--mono', stack);
 
-  if (settings.bgColor && /^#?[0-9a-f]{3,8}$/i.test(settings.bgColor.trim())) {
-    root.style.setProperty('--bg', settings.bgColor.trim().replace(/^([^#])/, '#$1'));
+  const bgColor = typeof settings.bgColor === 'string' ? settings.bgColor.trim() : '';
+  const activeTheme = THEMES.find((theme) => theme.id === settings.theme);
+  if (bgColor && /^#?(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(bgColor)) {
+    root.style.setProperty('--bg', bgColor.replace(/^([^#])/, '#$1'));
+  } else if (activeTheme) {
+    root.style.setProperty('--bg', activeTheme.colors.bg);
   } else {
     root.style.removeProperty('--bg');
   }
 
-  if (settings.bgImage.trim()) {
-    const dim = Math.min(Math.max(settings.bgDim ?? 0.45, 0), 0.95);
-    const img = settings.bgImage.trim().replace(/"/g, '');
+  const bgImage = typeof settings.bgImage === 'string' ? settings.bgImage.trim() : '';
+  if (bgImage) {
+    const dim = Math.min(Math.max(Number(settings.bgDim ?? 0.45), 0), 0.95);
+    const img = bgImage.replace(/"/g, '');
     document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,${dim}),rgba(0,0,0,${dim})), url("${img}")`;
     document.body.style.backgroundSize = 'cover';
     document.body.style.backgroundPosition = 'center';
@@ -638,6 +774,12 @@ function normalizeUrl(s) {
   s = s.trim();
   if (!/^https?:\/\//i.test(s)) s = 'https://' + s;
   return s;
+}
+
+/* не даём импортированным закладкам подсунуть javascript:/data: */
+function safeHref(url) {
+  const value = typeof url === 'string' ? url.trim() : '';
+  return /^(?:https?|ftp|file|mailto):/i.test(value) ? value : '#';
 }
 
 function hostOf(url) {
@@ -706,7 +848,9 @@ function renderMirror() {
     'position:absolute;visibility:hidden;white-space:pre;font:16px var(--mono)';
   meas.textContent = q.value.slice(0, 200);
   document.body.appendChild(meas);
-  cursorEl.style.left = meas.offsetWidth + mirror.offsetLeft + 'px';
+  const scroll = Math.max(0, q.scrollLeft);
+  mirror.style.left = `${-scroll}px`;
+  cursorEl.style.left = `${meas.offsetWidth - scroll}px`;
   meas.remove();
 }
 
@@ -729,14 +873,11 @@ function buildSuggest() {
         sugItems.push({
           text: ('!' + e.bang + ' ').padEnd(8) + e.name,
           tag: 'engine',
-          apply: () => {
-            q.value = '!';
-          },
           action: () => {
             settings.engine = e.id;
             save();
             renderAll();
-            toast('движок: ' + e.name);
+            toast(`${t('toastEngine')}: ${e.name}`);
             closeSuggest();
           },
         });
@@ -747,13 +888,10 @@ function buildSuggest() {
 
   if (settings.suggestLinks) {
     for (const l of getLinks()) {
-      if (l.name.toLowerCase().includes(s)) {
+      if (l.name.toLowerCase().includes(s) && sugItems.length < 14) {
         sugItems.push({
           text: l.name,
           tag: 'link:' + hostOf(l.url),
-          apply: () => {
-            q.value = l.name;
-          },
           action: () => openUrl(normalizeUrl(l.url)),
         });
       }
@@ -767,9 +905,6 @@ function buildSuggest() {
           sugItems.push({
             text: it.name,
             tag: hostOf(it.url),
-            apply: () => {
-              q.value = it.name;
-            },
             action: () => openUrl(it.url),
           });
         }
@@ -809,14 +944,7 @@ function moveSuggest(dir) {
 function renderChips() {
   const box = $('#chips');
   box.innerHTML = '';
-  const list = settings.engineChips || [
-    'google',
-    'ddg',
-    'wikipedia',
-    'youtube',
-    'github',
-    'habr',
-  ];
+  const list = ENGINE_CHIPS;
   for (const id of list) {
     const e = engineById(id);
     const b = document.createElement('button');
@@ -833,15 +961,18 @@ function renderChips() {
   }
 }
 
-function doSearch() {
+function doSearch(forceNewTab = false) {
   const parsed = parseInput(q.value);
   if (!parsed) return;
   switch (parsed.type) {
     case 'search':
-      openUrl(parsed.engine.url.replace('%s', encodeURIComponent(parsed.query)));
+      openUrl(
+        parsed.engine.url.replace('%s', encodeURIComponent(parsed.query)),
+        forceNewTab,
+      );
       break;
     case 'url':
-      openUrl(parsed.url);
+      openUrl(parsed.url, forceNewTab);
       break;
     case 'engine-switch':
       settings.engine = parsed.engine.id;
@@ -849,7 +980,7 @@ function doSearch() {
       renderAll();
       q.value = '';
       renderMirror();
-      toast('движок: ' + parsed.engine.name);
+      toast(`${t('toastEngine')}: ${parsed.engine.name}`);
       break;
     case 'command':
       runCommand(parsed.cmd);
@@ -883,7 +1014,7 @@ function buildAdvancedQuery(engine = $('#adv-engine').value) {
     .forEach((word) => parts.push(`-${word}`));
   if (alternatives.length > 1) {
     parts.push(
-      engine === 'ddg' ? alternatives.join(' ') : `(${alternatives.join(' OR ')})`,
+      engine === 'ddg' ? alternatives.join(' OR ') : `(${alternatives.join(' OR ')})`,
     );
   } else if (alternatives.length === 1) parts.push(alternatives[0]);
   if (value('#adv-site')) parts.push(`site:${value('#adv-site')}`);
@@ -933,7 +1064,7 @@ advancedForm.addEventListener('change', updateAdvancedPreview);
 advancedForm.addEventListener('submit', (ev) => {
   ev.preventDefault();
   if (!buildAdvancedQuery()) {
-    toast('введите поисковый запрос', true);
+    toast(t('toastEnterQuery'), true);
     $('#adv-query').focus();
     return;
   }
@@ -973,6 +1104,7 @@ const WEATHER_CODES = {
   99: 'weatherStorm',
 };
 let weatherSnapshot = null;
+let weatherStatusKey = 'weatherStart';
 
 function weatherDescription(code) {
   return t(WEATHER_CODES[code] || 'weatherOvercast');
@@ -982,19 +1114,19 @@ function weatherSymbol(code) {
   if (code === 0 || code === 1) return '☀';
   if (code === 2) return '◐';
   if (code === 45 || code === 48) return '≋';
-  if (code >= 71 && code <= 86) return '❄';
+  if ([71, 73, 75, 77, 85, 86].includes(code)) return '❄';
   if (code >= 95) return '⚡';
   if (code >= 51 && code <= 57) return '⋰';
-  if (code >= 80) return '☂';
-  if (code >= 61) return '☂';
+  if ((code >= 61 && code <= 67) || (code >= 80 && code <= 82)) return '☂';
   return '☁';
 }
 
-function setWeatherStatus(message, isError = false) {
+function setWeatherStatus(key, isError = false) {
+  weatherStatusKey = key;
   const status = $('#weather-status');
   status.hidden = false;
   status.className = 'weather-status' + (isError ? ' err' : '');
-  status.textContent = message;
+  status.textContent = t(key);
 }
 
 function renderWeatherSnapshot() {
@@ -1081,7 +1213,7 @@ async function fetchWeather(
   rememberCity = false,
   defaultCity = location,
 ) {
-  setWeatherStatus(t('weatherLoading'));
+  setWeatherStatus('weatherLoading');
   $('#weather-current').hidden = true;
   $('#weather-forecast').hidden = true;
   const params = new URLSearchParams({
@@ -1108,14 +1240,14 @@ async function fetchWeather(
     }
     renderWeatherSnapshot();
   } catch {
-    setWeatherStatus(t('weatherError'), true);
+    setWeatherStatus('weatherError', true);
   }
 }
 
 async function searchWeatherCity(city) {
-  const query = city.trim();
+  const query = typeof city === 'string' ? city.trim() : '';
   if (!query) return;
-  setWeatherStatus(t('weatherSearching'));
+  setWeatherStatus('weatherSearching');
   const params = new URLSearchParams({
     name: query,
     count: '1',
@@ -1130,14 +1262,14 @@ async function searchWeatherCity(city) {
     const result = await response.json();
     const place = result.results?.[0];
     if (!place) {
-      setWeatherStatus(t('weatherNoCity'), true);
+      setWeatherStatus('weatherNoCity', true);
       return;
     }
     const location = [place.name, place.country].filter(Boolean).join(', ');
     $('#weather-location').value = place.name;
     await fetchWeather(place.latitude, place.longitude, location, true, place.name);
   } catch {
-    setWeatherStatus(t('weatherError'), true);
+    setWeatherStatus('weatherError', true);
   }
 }
 
@@ -1148,15 +1280,15 @@ $('#weather-form').addEventListener('submit', (ev) => {
 
 $('#weather-locate').addEventListener('click', () => {
   if (!navigator.geolocation) {
-    setWeatherStatus(t('weatherPermission'), true);
+    setWeatherStatus('weatherPermission', true);
     return;
   }
-  setWeatherStatus(t('weatherLoading'));
+  setWeatherStatus('weatherLoading');
   navigator.geolocation.getCurrentPosition(
     ({ coords }) => fetchWeather(coords.latitude, coords.longitude, t('myLocation')),
     (error) =>
       setWeatherStatus(
-        error.code === 1 ? t('weatherPermission') : t('weatherLocationError'),
+        error.code === 1 ? 'weatherPermission' : 'weatherLocationError',
         true,
       ),
     { enableHighAccuracy: false, maximumAge: 300000, timeout: 10000 },
@@ -1174,17 +1306,11 @@ q.addEventListener('input', () => {
 });
 q.addEventListener('focus', refreshCursor);
 
-q.addEventListener('keydown', (ev) => {
+q.addEventListener('keydown', (
+  ev) => {
   if (ev.key === 'Tab') {
     ev.preventDefault();
-    const list = settings.engineChips || [
-      'google',
-      'ddg',
-      'wikipedia',
-      'youtube',
-      'github',
-      'habr',
-    ];
+    const list = ENGINE_CHIPS;
     const idx = list.indexOf(settings.engine);
     settings.engine = list[(idx + 1 + list.length) % list.length] || ENGINES[0].id;
     save();
@@ -1217,7 +1343,7 @@ q.addEventListener('keydown', (ev) => {
   }
   if (ev.key === 'Enter') {
     ev.preventDefault();
-    doSearch();
+    doSearch(ev.ctrlKey || ev.metaKey);
     q.value = '';
     closeSuggest();
     renderMirror();
@@ -1244,6 +1370,24 @@ function linkGroupLabel(group) {
     shop: 'categoryShop',
   };
   return keys[group] ? t(keys[group]) : group;
+}
+
+function linkFaviconUrl(url) {
+  try {
+    const site = new URL(normalizeUrl(url));
+    if (!['http:', 'https:'].includes(site.protocol) || !site.hostname) return null;
+    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(site.hostname)}&sz=64`;
+  } catch {
+    return null;
+  }
+}
+
+function createLinkIconFallback(name) {
+  const fallback = document.createElement('span');
+  fallback.className = 'lk-icon-fallback';
+  fallback.setAttribute('aria-hidden', 'true');
+  fallback.textContent = name.trim().charAt(0).toUpperCase() || '↗';
+  return fallback;
 }
 
 /* эффективные клавиши ссылок: своя клавиша (l.key) или автономер 1–9 по порядку */
@@ -1293,7 +1437,24 @@ function renderLinks() {
       a.draggable = true;
       a.dataset.i = i;
       applyLinkTarget(a);
-      a.innerHTML = `<span class="lk-key"></span><span class="lk-name"></span><button type="button" class="lk-edit" title="изменить">✎</button><button type="button" class="lk-del" title="удалить">×</button>`;
+      a.innerHTML = `<img class="lk-icon" alt="" aria-hidden="true"><span class="lk-key"></span><span class="lk-name"></span><button type="button" class="lk-edit">✎</button><button type="button" class="lk-del">×</button>`;
+      const icon = a.querySelector('.lk-icon');
+      const faviconUrl = linkFaviconUrl(l.url);
+      if (faviconUrl) {
+        icon.width = 20;
+        icon.height = 20;
+        icon.loading = 'lazy';
+        icon.decoding = 'async';
+        icon.referrerPolicy = 'no-referrer';
+        icon.src = faviconUrl;
+        icon.addEventListener(
+          'error',
+          () => icon.replaceWith(createLinkIconFallback(l.name)),
+          { once: true },
+        );
+      } else {
+        icon.replaceWith(createLinkIconFallback(l.name));
+      }
       a.querySelector('.lk-edit').title = t('editLinkTitle');
       a.querySelector('.lk-del').title = t('deleteLinkTitle');
       const keyEl = a.querySelector('.lk-key');
@@ -1314,7 +1475,7 @@ function renderLinks() {
         settings.links = getLinks().filter((x) => x !== l);
         save();
         renderAll();
-        toast('удалено: ' + l.name);
+        toast(`${t('toastDeleted')}: ${l.name}`);
       };
       attachLinkDrag(a, l);
       grid.appendChild(a);
@@ -1376,19 +1537,25 @@ function attachGroupDrop(cat) {
     ev.preventDefault();
     ev.stopPropagation();
     cat.classList.remove('dragover');
-    const links = getLinks();
+    const links = getLinks().map((link) => ({ ...link }));
     const moved = links[dragIdx];
     dragIdx = -1;
     if (!moved || moved.group === cat.dataset.group) return;
     moved.group = cat.dataset.group;
+    settings.links = links;
     save();
     renderAll();
-    toast(`«${moved.name}» → группа «${moved.group}»`);
+    toast(`«${moved.name}» → ${t('toastGroup')} «${moved.group}»`);
   });
 }
 
 const linkForm = $('#link-form');
 function showLinkForm(editIdx) {
+  if (!settings.showLinks) {
+    settings.showLinks = true;
+    save();
+    renderAll();
+  }
   linkForm.hidden = false;
   $('#lf-idx').value = editIdx;
   if (editIdx >= 0) {
@@ -1483,7 +1650,7 @@ function renderBookmarkItem(item, folderIndex) {
   li.appendChild(favorite);
 
   const a = document.createElement('a');
-  a.href = item.url;
+  a.href = safeHref(item.url);
   a.textContent = item.name;
   applyLinkTarget(a);
   li.appendChild(a);
@@ -1804,16 +1971,18 @@ function importFile(file) {
       const data = parseBookmarksHtml(reader.result);
       const n = data.folders.reduce((s, f) => s + f.items.length, 0);
       if (!n) {
-        toast('закладок в файле не найдено', true);
+        toast(t('toastBookmarksEmptyFile'), true);
         return;
       }
       settings.bookmarks = data;
       settings.bookmarkCollapsed = data.folders.map((folder) => folder.name);
       save();
       renderAll();
-      toast(`импортировано: ${n} закладок, ${data.folders.length} папок`);
+      toast(
+        `${t('toastBookmarksImported')}: ${n} · ${t('toastFolders')}: ${data.folders.length}`,
+      );
     } catch (e) {
-      toast('не удалось разобрать файл', true);
+      toast(t('toastParseFailed'), true);
     }
   };
   reader.readAsText(file);
@@ -1884,20 +2053,30 @@ $('#bm-folder-cancel').addEventListener('click', () => {
 });
 
 /* drag&drop */
+function isFileDrag(ev) {
+  const types = ev.dataTransfer?.types;
+  return !!types && Array.from(types).includes('Files');
+}
+
 let dragDepth = 0;
 document.addEventListener('dragenter', (ev) => {
+  if (!isFileDrag(ev)) return;
   ev.preventDefault();
   dragDepth++;
   $('#dropzone').hidden = false;
 });
-document.addEventListener('dragleave', () => {
+document.addEventListener('dragleave', (ev) => {
+  if (!isFileDrag(ev)) return;
   if (--dragDepth <= 0) {
     dragDepth = 0;
     $('#dropzone').hidden = true;
   }
 });
-document.addEventListener('dragover', (ev) => ev.preventDefault());
+document.addEventListener('dragover', (ev) => {
+  if (isFileDrag(ev)) ev.preventDefault();
+});
 document.addEventListener('drop', (ev) => {
+  if (!isFileDrag(ev)) return;
   ev.preventDefault();
   dragDepth = 0;
   $('#dropzone').hidden = true;
@@ -2042,18 +2221,7 @@ function isMajorVersionCompatible(imported, current) {
 }
 
 function applyImportedSettings(importedSettings) {
-  settings = { ...DEFAULT_SETTINGS, ...importedSettings };
-  if (!Array.isArray(settings.links)) settings.links = null;
-  if (!['ru', 'en'].includes(settings.language)) settings.language = 'ru';
-  if (!Array.isArray(settings.bookmarkCollapsed)) {
-    settings.bookmarkCollapsed = (settings.bookmarks?.folders || []).map(
-      (folder) => folder.name,
-    );
-  }
-  if (!['all', 'favorites', 'recent'].includes(settings.bookmarkView))
-    settings.bookmarkView = 'all';
-  if (typeof settings.weatherLocation !== 'string') settings.weatherLocation = '';
-  settings.weatherLocation = settings.weatherLocation.trim();
+  settings = sanitizeSettings(importedSettings);
   save();
   renderAll();
   renderHelp();
@@ -2152,8 +2320,8 @@ const COMMANDS = [
         settings.bookmarks = null;
         save();
         renderAll();
-        toast('закладки удалены');
-      } else toast('закладок и так нет');
+        toast(t('toastBookmarksCleared'));
+      } else toast(t('toastNoBookmarks'));
     },
   },
   {
@@ -2161,9 +2329,19 @@ const COMMANDS = [
     desc: 'сбросить все настройки (danger)',
     run: () => {
       localStorage.removeItem('termstart.v1');
-      settings = { ...DEFAULT_SETTINGS };
+      settings = { ...DEFAULT_SETTINGS, bookmarkCollapsed: [] };
+      weatherSnapshot = null;
+      weatherStatusKey = 'weatherStart';
+      $('#weather-current').hidden = true;
+      $('#weather-forecast').hidden = true;
       renderAll();
-      toast('настройки сброшены');
+      const status = $('#weather-status');
+      if (status) {
+        status.hidden = false;
+        status.className = 'weather-status';
+      }
+      renderHelp();
+      toast(t('toastSettingsReset'));
     },
   },
   {
@@ -2172,7 +2350,10 @@ const COMMANDS = [
     run: () => {
       settings.openNewTab = !settings.openNewTab;
       save();
-      toast('новая вкладка: ' + (settings.openNewTab ? 'вкл' : 'выкл'));
+      renderAll();
+      toast(
+        `${t('toastNewTab')}: ${settings.openNewTab ? t('toastOn') : t('toastOff')}`,
+      );
     },
   },
   { cmd: ':help', desc: 'помощь', run: () => openOverlay('#help') },
@@ -2200,6 +2381,7 @@ function renderPal() {
     (c) => !s || c.cmd.includes(s) || c.desc.toLowerCase().includes(s),
   );
   palSel = 0;
+  palList.className = 'pal-list';
   palList.innerHTML = '';
   if (!palItems.length) {
     palList.textContent = t('noCommand');
@@ -2233,7 +2415,7 @@ function runCommand(cmdStr) {
   if (c) {
     closeSuggest();
     c.run();
-  } else toast('неизвестная команда: :' + cmdStr, true);
+  } else toast(`${t('toastUnknownCommand')}: :${cmdStr}`, true);
 }
 
 palInput.addEventListener('input', renderPal);
@@ -2278,14 +2460,17 @@ $$('.overlay').forEach((o) => {
 
 /* ============ settings dialog ============ */
 
-const THEMES = ['phosphor', 'amber', 'paper'];
-
 function cycleTheme() {
-  const next = THEMES[(THEMES.indexOf(settings.theme) + 1) % THEMES.length];
-  settings.theme = next;
+  if (!THEMES.length) {
+    toast('Темы недоступны: проверьте themes.json', true);
+    return;
+  }
+  const index = THEMES.findIndex((theme) => theme.id === settings.theme);
+  const next = THEMES[(index + 1) % THEMES.length];
+  settings.theme = next.id;
   save();
   renderAll();
-  toast('тема: ' + next);
+  toast(`${t('toastTheme')}: ${next.name}`);
 }
 
 function cycleEngine() {
@@ -2293,15 +2478,16 @@ function cycleEngine() {
   settings.engine = ENGINES[(idx + 1) % ENGINES.length].id;
   save();
   renderAll();
-  toast('движок: ' + engineById(settings.engine).name);
+  toast(`${t('toastEngine')}: ${engineById(settings.engine).name}`);
 }
 
 function renderSettings() {
   const body = $('#set-body');
   body.innerHTML = '';
+  const themeLabels = Object.fromEntries(THEMES.map((theme) => [theme.id, theme.name]));
   const engineLabels = Object.fromEntries(ENGINES.map((e) => [e.id, e.name]));
   const rows = [
-    ['theme', t('settingTheme'), 'select', ['phosphor', 'amber', 'paper']],
+    ['theme', t('settingTheme'), 'select', THEMES.map((theme) => theme.id), themeLabels],
     ['borders', t('settingBorders'), 'select', ['solid', 'dashed', 'double']],
     ['engine', t('settingEngine'), 'select', ENGINES.map((e) => e.id), engineLabels],
     [
@@ -2329,6 +2515,7 @@ function renderSettings() {
     ['suggestEngines', t('settingSuggestEngines'), 'check'],
     ['showLinks', t('settingShowLinks'), 'check'],
     ['showBookmarks', t('settingShowBookmarks'), 'check'],
+    ['clock24', t('settingClock24'), 'check'],
   ];
   for (const [key, label, type, opts, labels, placeholder] of rows) {
     const row = document.createElement('div');
@@ -2585,11 +2772,12 @@ $('#ha-bm').onclick = () => $('#bm-file').click();
 /* ============ init ============ */
 
 function renderAll() {
-  document.documentElement.dataset.theme = settings.theme;
+  const theme = THEMES.find((item) => item.id === settings.theme);
+  if (theme) RyuThemeConfig.apply(theme);
   document.documentElement.dataset.borders = settings.borders;
   applyLanguage();
   applyCustomization();
-  $('#st-theme').textContent = t('theme') + ':' + settings.theme;
+  $('#st-theme').textContent = t('theme') + ':' + (theme ? theme.name : '—');
   $('#st-engine').textContent = t('engine') + ':' + engineById(settings.engine).id;
   $('#engine-tag').textContent = engineById(settings.engine).name;
   $('#links-panel').hidden = !settings.showLinks;
@@ -2601,11 +2789,26 @@ function renderAll() {
   renderWeatherSnapshot();
 }
 
-load();
-renderAll();
-renderHelp();
-initializeWeather();
-tick();
-setInterval(tick, 1000);
-refreshCursor();
-q.focus();
+async function initialize() {
+  try {
+    const config = await RyuThemeConfig.load();
+    THEMES = config.themes;
+    DEFAULT_SETTINGS.theme = config.default;
+  } catch (error) {
+    console.error('Unable to load themes.json:', error);
+    toast(error.message, true);
+  }
+
+  settings.theme = DEFAULT_SETTINGS.theme;
+  load();
+  renderAll();
+  renderHelp();
+  updateAdvancedPreview();
+  initializeWeather();
+  tick();
+  setInterval(tick, 1000);
+  refreshCursor();
+  q.focus();
+}
+
+initialize();

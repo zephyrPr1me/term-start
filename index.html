@@ -1,17 +1,22 @@
 <!doctype html>
-<html lang="ru" data-theme="phosphor">
+<html lang="ru">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark light" />
+    <meta name="application-name" content="RYU" />
     <meta name="application-version" content="1.0.0" />
     <meta name="page-version" content="1.0.0" />
-    <title>term·start</title>
+    <title>RYU · tateru</title>
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%230b0e0b'/%3E%3Crect x='3' y='3' width='7' height='10' fill='%2394c584'/%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="assets/css/foundation.css" />
+    <link rel="stylesheet" href="assets/css/search.css" />
+    <link rel="stylesheet" href="assets/css/links.css" />
+    <link rel="stylesheet" href="assets/css/tateru.css" />
+    <link rel="stylesheet" href="assets/css/interface.css" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@fontsource/iosevka@5/400.css"
@@ -44,10 +49,6 @@
   <body>
     <div class="wrap">
       <header id="masthead">
-        <pre id="ascii" aria-hidden="true">
-┌──[ term·start ]──────────────────────────────
-<span id="ascii-subtitle" data-i18n="asciiSubtitle">│ search · links · bookmarks · weather</span>
-└──────────────────────────────────  ~/start</pre>
         <div id="clockbox">
           <div id="clock" aria-live="off">00:00:00</div>
           <div id="date">&nbsp;</div>
@@ -127,16 +128,6 @@
             >
               cfg
             </button>
-            <a
-              href="hack.html"
-              class="btn"
-              id="ha-hack"
-              title="перейти в hack-режим"
-              data-i18n="hackButton"
-              data-i18n-title="hackTitle"
-            >
-              ↯hack
-            </a>
             <button
               type="button"
               class="btn"
@@ -158,7 +149,7 @@
         </div>
         <div class="prompt-row">
           <label class="prompt" for="q"
-            ><span class="p-user">guest@term</span>:<span class="p-path">~</span
+            ><span class="p-user">guest@ryu</span>:<span class="p-path">~/tateru</span
             >$</label
           >
           <div class="input-wrap">
@@ -272,7 +263,6 @@
           <div
             id="weather-status"
             class="weather-status"
-            data-i18n="weatherStart"
             aria-live="polite"
           >
             Enter a city or use your location.
@@ -385,7 +375,7 @@
           title="сменить тему (t)"
           data-i18n-title="settingTheme"
         >
-          theme:phosphor
+          theme
         </button>
         <span class="st-sep">│</span>
         <button
@@ -448,6 +438,7 @@
           id="pal-input"
           type="text"
           placeholder="команда…"
+          data-i18n-placeholder="palettePlaceholder"
           autocomplete="off"
           spellcheck="false"
         />
@@ -465,7 +456,7 @@
         data-i18n-aria-label="settingsDialog"
       >
         <div class="dialog-head">
-          <span class="dialog-title">~/.term-startrc</span
+          <span class="dialog-title">~/.ryu/taterurc</span
           ><span class="hr" aria-hidden="true"></span
           ><button type="button" class="btn overlay-close">esc</button>
         </div>
@@ -491,7 +482,7 @@
         data-i18n-aria-label="helpDialog"
       >
         <div class="dialog-head">
-          <span class="dialog-title">man term-start</span
+          <span class="dialog-title">man ryu-tateru</span
           ><span class="hr" aria-hidden="true"></span
           ><button type="button" class="btn overlay-close">esc</button>
         </div>
@@ -617,23 +608,21 @@
             </label>
           </div>
           <div class="advanced-preview-wrap">
-            <label for="advanced-preview" data-i18n="finalQuery">Итоговый запрос</label>
-            <div class="advanced-preview" id="advanced-preview" aria-live="polite">
-              data-i18n="queryPreview">Поисковый запрос появится здесь...
-            </div>
+            <span id="advanced-preview-label" data-i18n="finalQuery">Итоговый запрос</span>
+            <div class="advanced-preview" id="advanced-preview" aria-live="polite"></div>
           </div>
           <div class="advanced-actions">
             <span id="advanced-note" class="advanced-note"></span
-            ><button type="submit" class="btn" id="advanced-submit">
-              <span data-i18n="searchIn">Искать в Google</span>
-            </button>
+            ><button type="submit" class="btn" id="advanced-submit"></button>
           </div>
         </form>
       </div>
     </div>
 
     <div id="dropzone" hidden>
-      <div class="dz-box">⇪ отпустите файл закладок (.html)</div>
+      <div class="dz-box" data-i18n="dropHint">
+        ⇪ отпустите файл закладок (.html) или конфигурации (.json)
+      </div>
     </div>
     <div id="toasts" aria-live="polite"></div>
 
@@ -642,6 +631,8 @@
         нужен включённый javascript
       </div></noscript
     >
-    <script src="app.js"></script>
+    <script type="module" src="assets/js/theme-loader.js"></script>
+    <script type="module" src="assets/js/page-switch.js"></script>
+    <script type="module" src="assets/js/tateru.js"></script>
   </body>
 </html>

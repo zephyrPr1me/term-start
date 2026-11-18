@@ -1,0 +1,206 @@
+/* RYU · shared visual foundation for both modes.
+   Theme colors are loaded from themes.json and applied as CSS variables. */
+
+:root {
+  --mono:
+    'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'IBM Plex Mono', ui-monospace,
+    'SF Mono', Consolas, monospace;
+  --border-style: solid;
+  --bg: Canvas;
+  --bg-panel: Canvas;
+  --bg-inset: Canvas;
+  --fg: CanvasText;
+  --fg-dim: GrayText;
+  --fg-mute: GrayText;
+  --accent: Highlight;
+  --accent2: Highlight;
+  --danger: Mark;
+  --border: GrayText;
+  --sel: Highlight;
+  --status-fg: var(--bg);
+  --overlay: rgb(0 0 0 / 55%);
+}
+
+html[data-borders='double'] {
+  --border-style: double;
+  --border-w: 3px;
+}
+html[data-borders='dashed'] {
+  --border-style: dashed;
+}
+:root {
+  --border-w: 1px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--status-fg);
+}
+
+/* ---------- layout ---------- */
+
+.wrap {
+  flex: 1;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 20px 16px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 290px);
+  align-items: start;
+  gap: 14px;
+}
+
+/* ---------- header ---------- */
+
+#masthead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+#clockbox {
+  text-align: center;
+}
+#clock {
+  font-size: 24px;
+  color: var(--fg);
+  letter-spacing: 2px;
+}
+#date {
+  font-size: 12px;
+  color: var(--fg-dim);
+  margin-bottom: 6px;
+}
+#head-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.language-switch {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  background: var(--bg-inset);
+}
+.language-option {
+  min-width: 32px;
+  padding: 2px 5px;
+  border: 0;
+  background: transparent;
+  color: var(--fg-dim);
+  font: 11px var(--mono);
+  cursor: pointer;
+}
+.language-option + .language-option {
+  border-left: 1px solid var(--border);
+}
+.language-option[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 700;
+}
+.language-option:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* ---------- panels ---------- */
+
+.panel {
+  border: var(--border-w) var(--border-style) var(--border);
+  background: var(--bg-panel);
+  padding: 10px 12px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.panel-title {
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: lowercase;
+}
+
+.panel-title::before {
+  content: '──[ ';
+  color: var(--fg-mute);
+}
+.panel-title::after {
+  content: ' ]';
+  color: var(--fg-mute);
+}
+
+.hr {
+  flex: 1;
+  border-top: 1px dashed var(--border);
+  min-width: 12px;
+}
+
+.panel-tag {
+  color: var(--fg-dim);
+  font-size: 12px;
+}
+
+/* ---------- buttons ---------- */
+
+.btn {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--fg);
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  cursor: pointer;
+}
+a.btn {
+  display: inline-block;
+  text-decoration: none;
+}
+.btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.btn:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
+}
+.btn.danger:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}

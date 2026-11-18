@@ -1,0 +1,118 @@
+/* RYU · Shared shortcut and pinned-link cards. */
+
+/* ---------- links ---------- */
+
+.links {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 6px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-inset);
+  padding: 6px 8px;
+  color: var(--fg);
+  text-decoration: none;
+  position: relative;
+}
+.link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.link .lk-icon,
+.link .lk-icon-fallback {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  border-radius: 4px;
+  background: #fff;
+}
+.link .lk-icon {
+  object-fit: contain;
+  padding: 2px;
+}
+.link .lk-icon-fallback {
+  display: grid;
+  place-items: center;
+  color: #333;
+  font: 700 11px var(--mono);
+}
+.link .lk-key {
+  color: var(--accent2);
+  font-weight: 700;
+  flex-shrink: 0;
+  min-width: 14px;
+}
+.link .lk-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.link .lk-del {
+  margin-left: 0;
+  visibility: hidden;
+  background: none;
+  border: none;
+  color: var(--fg-mute);
+  font-family: var(--mono);
+  cursor: pointer;
+  padding: 0 2px;
+}
+.link:hover .lk-del {
+  visibility: visible;
+}
+.link .lk-del:hover {
+  color: var(--danger);
+}
+.link .lk-edit {
+  margin-left: auto;
+  visibility: hidden;
+  background: none;
+  border: none;
+  color: var(--fg-mute);
+  font-family: var(--mono);
+  cursor: pointer;
+  padding: 0 2px;
+  font-size: 11px;
+}
+.link:hover .lk-edit {
+  visibility: visible;
+}
+.link .lk-edit:hover {
+  color: var(--accent);
+}
+
+.link .lk-key.custom {
+  color: var(--accent);
+  text-decoration: underline dotted;
+}
+
+/* группы ссылок + drag&drop */
+.links-root {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.lk-cat {
+  margin-top: 4px;
+  padding: 2px 0 4px;
+  border-bottom: 1px dashed var(--border);
+  color: var(--accent2);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+.lk-cat:first-child {
+  margin-top: 0;
+}
+.lk-cat.dragover,
+.link.dragover {
+  outline: 1px dashed var(--accent);
+  outline-offset: 2px;
+}
+.link.dragging {
+  opacity: 0.45;
+}

@@ -1,514 +1,552 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="color-scheme" content="dark">
-<title>root@kali :: command center</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%80%3C/text%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="application-name" content="RYU" />
+    <meta name="application-version" content="1.0.0" />
+    <meta name="page-version" content="1.0.0" />
+    <title>RYU · kowasu</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%230b0e0b'/%3E%3Crect x='3' y='3' width='7' height='10' fill='%2394c584'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="assets/css/foundation.css" />
+    <link rel="stylesheet" href="assets/css/search.css" />
+    <link rel="stylesheet" href="assets/css/links.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/iosevka@5/400.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/iosevka@5/700.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/victor-mono@5/400.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/victor-mono@5/700.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/400.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/700.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/fira-code@5/400.css"
+    />
+    <link rel="stylesheet" href="assets/css/interface.css" />
+    <link rel="stylesheet" href="assets/css/kowasu.css" />
+  </head>
+  <body class="kowasu">
+    <div class="wrap">
+      <header id="masthead" class="workspace-head">
+        <div class="workspace-identity">
+          <div class="workspace-mark" aria-hidden="true">R//K</div>
+          <div>
+            <div class="workspace-label" data-i18n="workspaceLabel">RESEARCH / DEFENSE</div>
+            <h1>KOWASU</h1>
+            <p data-i18n="workspaceIntro">A quiet desk for security research and defensive practice.</p>
+          </div>
+        </div>
+        <div id="clockbox">
+          <div id="clock" aria-live="off">00:00:00</div>
+          <div id="date">&nbsp;</div>
+          <div id="head-actions">
+            <button
+              type="button"
+              class="btn"
+              id="ha-settings"
+              title="Настройки"
+              data-i18n-title="settings"
+              aria-label="Настройки"
+              data-i18n-aria-label="settings"
+              aria-controls="settings"
+              aria-expanded="false"
+            >
+              ⚙
+            </button>
+            <button
+              type="button"
+              class="btn"
+              id="ha-help"
+              title="Помощь (?)"
+              data-i18n-title="help"
+              aria-label="Помощь"
+              data-i18n-aria-label="help"
+            >
+              ?
+            </button>
+          </div>
+        </div>
+      </header>
 
-<style>
-  :root{
-    --bg:#0a0707;
-    --bg-panel:#120b0b;
-    --bg-panel-alt:#170e0e;
-    --border:#3a1a1a;
-    --text:#e9dcdc;
-    --text-dim:#8f6f6f;
-    --accent:#ff3b3b;
-    --accent-dim:#7a1f1f;
-    --accent-glow:rgba(255,59,59,.35);
-    --success:#3ecf6a;
-    --danger:#ff3b3b;
-    --radius:6px;
-  }
-  body[data-theme="matrix"]{
-    --bg:#020402;
-    --bg-panel:#050f07;
-    --bg-panel-alt:#081408;
-    --border:#123d1c;
-    --text:#c9ffd2;
-    --text-dim:#5f9a6b;
-    --accent:#00ff6a;
-    --accent-dim:#0b5c26;
-    --accent-glow:rgba(0,255,106,.35);
-  }
+      <section class="panel" id="search-panel">
+        <div class="panel-head">
+          <span class="panel-title" data-i18n="search">поиск</span>
+          <span class="hr" aria-hidden="true"></span>
+          <span class="panel-tag" id="engine-tag">duckduckgo</span>
+        </div>
+        <div class="prompt-row">
+          <label class="prompt" for="q"
+            ><span class="p-user">guest@ryu</span>:<span class="p-path">~/kowasu</span
+            >$</label
+          >
+          <div class="input-wrap">
+            <input
+              id="q"
+              type="text"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+              placeholder="CVE, advisory, tool or query…"
+              data-i18n-placeholder="searchPlaceholder"
+              aria-label="Search"
+              data-i18n-aria-label="search"
+            />
+            <span id="mirror" aria-hidden="true"></span>
+            <span id="cursor" aria-hidden="true">▊</span>
+          </div>
+        </div>
+        <div class="chips" id="chips">
+          <button type="button" class="chip" data-engine="ddg">d · DuckDuckGo</button>
+          <button type="button" class="chip" data-engine="google">g · Google</button>
+          <button type="button" class="chip" data-engine="nvd">nvd</button>
+          <button type="button" class="chip" data-engine="cve">cve.org</button>
+          <button type="button" class="chip" data-engine="github">gh · GitHub</button>
+        </div>
+        <div class="hint-row" data-i18n="searchHint">
+          tab — engine · enter — search · / — focus · t — theme · ? — help
+        </div>
+      </section>
 
-  *{box-sizing:border-box;}
-  html,body{height:100%;}
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    font-family:'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
-    font-size:15px;
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-  }
+      <div class="content-grid kowasu-grid">
+        <section class="panel module module-quicklinks" id="quick-links">
+          <div class="panel-head">
+            <span class="panel-title" data-i18n="quickAccess">Быстрый доступ</span>
+            <span class="hr" aria-hidden="true"></span>
+            <span class="panel-tag" data-i18n="quickAccessTag">ЗАЩИТНЫЕ РЕСУРСЫ</span>
+          </div>
+          <nav class="quick-access-grid" aria-label="Security quick links" data-i18n-aria-label="quickAccess">
+            <a class="quick-access-link" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">
+              <span class="quick-access-index" aria-hidden="true">01</span>
+              <span class="quick-access-copy"><strong>CISA KEV</strong><small data-i18n="quickCisaDesc">Каталог активно используемых уязвимостей</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="quick-access-link" href="https://nvd.nist.gov/vuln/search" target="_blank" rel="noopener noreferrer">
+              <span class="quick-access-index" aria-hidden="true">02</span>
+              <span class="quick-access-copy"><strong>NVD</strong><small data-i18n="quickNvdDesc">Поиск CVE и оценка уязвимостей</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="quick-access-link" href="https://attack.mitre.org/" target="_blank" rel="noopener noreferrer">
+              <span class="quick-access-index" aria-hidden="true">03</span>
+              <span class="quick-access-copy"><strong>MITRE ATT&amp;CK</strong><small data-i18n="quickAttackDesc">Тактики, техники и меры защиты</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="quick-access-link" href="https://sigmahq.io/" target="_blank" rel="noopener noreferrer">
+              <span class="quick-access-index" aria-hidden="true">04</span>
+              <span class="quick-access-copy"><strong>Sigma HQ</strong><small data-i18n="quickSigmaDesc">Открытые правила обнаружения</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="quick-access-link" href="https://cheatsheetseries.owasp.org/" target="_blank" rel="noopener noreferrer">
+              <span class="quick-access-index" aria-hidden="true">05</span>
+              <span class="quick-access-copy"><strong>OWASP</strong><small data-i18n="quickOwaspDesc">Практики безопасной разработки</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="quick-access-link" href="https://portswigger.net/web-security" target="_blank" rel="noopener noreferrer">
+              <span class="quick-access-index" aria-hidden="true">06</span>
+              <span class="quick-access-copy"><strong>PortSwigger Academy</strong><small data-i18n="quickLabDesc">Безопасные практические лаборатории</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+          </nav>
+        </section>
 
-  .crt-overlay{
-    position:fixed; inset:0; pointer-events:none; z-index:50;
-    background:repeating-linear-gradient(to bottom, rgba(255,255,255,.025) 0px, rgba(255,255,255,.025) 1px, transparent 1px, transparent 3px);
-    mix-blend-mode:overlay;
-  }
+        <section class="panel module module-intel" id="intel-module">
+          <div class="panel-head">
+            <span class="panel-title" data-i18n="moduleIntel">Threat intelligence</span>
+            <span class="hr" aria-hidden="true"></span>
+            <span class="panel-tag" data-i18n="moduleIntelTag">ADVISORIES / CONTEXT</span>
+          </div>
+          <div class="module-links">
+            <a class="module-link" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">
+              <span class="module-index">01</span>
+              <span class="module-copy"><strong>CISA KEV</strong><small data-i18n="sourceCisa">Official catalog of actively exploited vulnerabilities</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="module-link" href="https://nvd.nist.gov/" target="_blank" rel="noopener noreferrer">
+              <span class="module-index">02</span>
+              <span class="module-copy"><strong>NVD</strong><small data-i18n="sourceNvd">National Vulnerability Database</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="module-link" href="https://www.cve.org/" target="_blank" rel="noopener noreferrer">
+              <span class="module-index">03</span>
+              <span class="module-copy"><strong>CVE.org</strong><small data-i18n="sourceCve">Vulnerability records and identifiers</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="module-link" href="https://attack.mitre.org/" target="_blank" rel="noopener noreferrer">
+              <span class="module-index">04</span>
+              <span class="module-copy"><strong>MITRE ATT&amp;CK</strong><small data-i18n="sourceAttack">Knowledge base for adversary behavior and defense</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </section>
 
-  a{color:inherit;text-decoration:none;}
-  button{font-family:inherit;font-size:inherit;cursor:pointer;}
-  input{font-family:inherit;font-size:inherit;}
+        <section class="panel module module-status" id="node-panel">
+          <div class="panel-head">
+            <span class="panel-title" data-i18n="moduleStatus">Session status</span>
+            <span class="hr" aria-hidden="true"></span>
+            <span class="panel-tag">LOCAL</span>
+          </div>
+          <div class="node-grid">
+            <div class="node-row">
+              <span class="node-label" data-i18n="connection">connection</span>
+              <span class="node-value" id="onlineVal">● online</span>
+            </div>
+            <div class="node-row">
+              <span class="node-label" data-i18n="publicIp">Public IP</span>
+              <span class="node-value">
+                <span id="ipVal" data-i18n="ipNotChecked">not checked</span>
+                <button
+                  type="button"
+                  class="btn node-refresh"
+                  id="ipRefresh"
+                  title="Check public IP"
+                  data-i18n-title="refreshIp"
+                  aria-label="Check public IP"
+                  data-i18n-aria-label="refreshIp"
+                >↗</button>
+              </span>
+            </div>
+            <div class="node-row">
+              <span class="node-label" data-i18n="uptime">uptime</span>
+              <span class="node-value" id="uptimeVal">0:00</span>
+            </div>
+            <div class="node-row">
+              <span class="node-label" data-i18n="engine">engine</span>
+              <span class="node-value" id="node-engine">duckduckgo</span>
+            </div>
+          </div>
+          <div class="node-note" data-i18n="ipNote">
+            Public IP lookup runs only when requested.
+          </div>
+        </section>
 
-  :focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+        <section class="panel module module-detection" id="detection-module">
+          <div class="panel-head">
+            <span class="panel-title" data-i18n="moduleDetection">Detection engineering</span>
+            <span class="hr" aria-hidden="true"></span>
+            <span class="panel-tag" data-i18n="moduleDetectionTag">RULES / TELEMETRY</span>
+          </div>
+          <div class="module-links">
+            <a class="module-link" href="https://sigmahq.io/" target="_blank" rel="noopener noreferrer">
+              <span class="module-index">01</span>
+              <span class="module-copy"><strong>Sigma</strong><small data-i18n="sourceSigma">Community detection rules</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="module-link" href="https://yara.readthedocs.io/" target="_blank" rel="noopener noreferrer">
+              <span class="module-index">02</span>
+              <span class="module-copy"><strong>YARA</strong><small data-i18n="sourceYara">Documentation for pattern matching</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="module-link" href="https://docs.suricata.io/" target="_blank" rel="noopener noreferrer">
+              <span class="module-index">03</span>
+              <span class="module-copy"><strong>Suricata</strong><small data-i18n="sourceSuricata">Network threat detection documentation</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="module-link" href="https://docs.zeek.org/" target="_blank" rel="noopener noreferrer">
+              <span class="module-index">04</span>
+              <span class="module-copy"><strong>Zeek</strong><small data-i18n="sourceZeek">Network analysis and event framework</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="module-link" href="https://cheatsheetseries.owasp.org/" target="_blank" rel="noopener noreferrer">
+              <span class="module-index">05</span>
+              <span class="module-copy"><strong>OWASP Cheat Sheets</strong><small data-i18n="sourceOwasp">Practical application security guidance</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </section>
 
-  .wrap{
-    max-width:1280px;
-    margin:clamp(20px,4vh,48px) auto;
-    padding:0 20px 40px;
-  }
+        <section class="panel module module-labs" id="labs-module">
+          <div class="panel-head">
+            <span class="panel-title" data-i18n="moduleLabs">Practice labs</span>
+            <span class="hr" aria-hidden="true"></span>
+            <span class="panel-tag" data-i18n="moduleLabsTag">SANDBOX / LEARN</span>
+          </div>
+          <div class="module-links">
+            <a class="module-link" href="https://portswigger.net/web-security" target="_blank" rel="noopener noreferrer">
+              <span class="module-index">01</span>
+              <span class="module-copy"><strong>PortSwigger Academy</strong><small data-i18n="sourcePortswigger">Guided web security labs</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="module-link" href="https://owasp.org/www-project-juice-shop/" target="_blank" rel="noopener noreferrer">
+              <span class="module-index">02</span>
+              <span class="module-copy"><strong>OWASP Juice Shop</strong><small data-i18n="sourceJuiceShop">Intentionally vulnerable training application</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="module-link" href="https://picoctf.org/" target="_blank" rel="noopener noreferrer">
+              <span class="module-index">03</span>
+              <span class="module-copy"><strong>picoCTF</strong><small data-i18n="sourcePico">Beginner-friendly security challenges</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="module-link" href="https://overthewire.org/wargames/bandit/" target="_blank" rel="noopener noreferrer">
+              <span class="module-index">04</span>
+              <span class="module-copy"><strong>OverTheWire</strong><small data-i18n="sourceOverTheWire">Linux and security learning games</small></span>
+              <span class="module-arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </section>
 
-  .terminal{
-    background:var(--bg-panel);
-    border:1px solid var(--border);
-    border-radius:8px;
-    box-shadow:0 0 0 1px rgba(0,0,0,.4), 0 20px 60px rgba(0,0,0,.5);
-    overflow:hidden;
-  }
+        <section class="panel module module-notes" id="notes-module">
+          <div class="panel-head">
+            <span class="panel-title" data-i18n="moduleNotes">Field notes</span>
+            <span class="hr" aria-hidden="true"></span>
+            <span class="panel-tag">LOCAL / PRIVATE</span>
+          </div>
+          <textarea
+            id="field-notes"
+            maxlength="5000"
+            placeholder="Write a note for this session…"
+            data-i18n-placeholder="notesPlaceholder"
+            aria-label="Field notes"
+            data-i18n-aria-label="moduleNotes"
+            spellcheck="true"
+          ></textarea>
+          <div class="notes-meta">
+            <span id="notes-state" data-i18n="notesLocal">Saved only in this browser</span>
+            <span id="notes-count">0 / 5000</span>
+          </div>
+        </section>
 
-  /* titlebar */
-  .titlebar{
-    display:flex;align-items:center;gap:16px;
-    padding:10px 16px;
-    background:var(--bg-panel-alt);
-    border-bottom:1px solid var(--border);
-  }
-  .dots{display:flex;gap:6px;flex:0 0 auto;}
-  .dots span{width:9px;height:9px;border-radius:50%;display:block;background:var(--border);}
-  .dots span:nth-child(1){background:var(--accent-dim);}
-  .dots span:nth-child(3){background:var(--accent);opacity:.7;}
-  .path{color:var(--text-dim);font-size:.82rem;flex:1 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .theme-switch{display:flex;border:1px solid var(--border);border-radius:4px;overflow:hidden;flex:0 0 auto;}
-  .theme-switch button{
-    background:transparent;border:0;color:var(--text-dim);padding:5px 10px;font-size:.72rem;letter-spacing:.03em;
-  }
-  .theme-switch button.active{background:var(--accent);color:var(--bg);}
-  .home-link{
-    flex:0 0 auto;border:1px solid var(--border);border-radius:4px;
-    color:var(--text-dim);padding:4px 10px;font-size:.72rem;letter-spacing:.03em;
-  }
-  .home-link:hover{color:var(--accent);border-color:var(--accent);border-radius:4px;background:transparent;}
-
-  /* header / brand + stats */
-  .brand-row{
-    display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:flex-start;
-    padding:22px 24px 18px;
-    border-bottom:1px solid var(--border);
-  }
-  .brand{display:flex;gap:16px;align-items:center;}
-  .skull{
-    margin:0;color:var(--accent);text-shadow:0 0 12px var(--accent-glow);
-    font-size:11px;line-height:1.15;opacity:.9;
-  }
-  .brand-text h1{margin:0;font-size:1.9rem;font-weight:700;letter-spacing:.01em;text-shadow:0 0 18px var(--accent-glow);}
-  .brand-text h1 .dim{color:var(--text-dim);}
-  .brand-text .tagline{margin:4px 0 0;color:var(--text-dim);font-size:.85rem;}
-  .cursor{animation:blink 1s steps(1) infinite;color:var(--accent);}
-  @keyframes blink{50%{opacity:0;}}
-
-  .stats{display:flex;flex-wrap:wrap;gap:20px 28px;}
-  .stat{display:flex;flex-direction:column;gap:2px;min-width:90px;}
-  .stat-label{font-size:.68rem;color:var(--text-dim);letter-spacing:.04em;}
-  .stat-value{font-size:.95rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:6px;}
-  .stat-value.is-on{color:var(--success);}
-  .stat-value.is-off{color:var(--danger);}
-  #ipRefresh{background:transparent;border:1px solid var(--border);color:var(--text-dim);border-radius:4px;width:20px;height:20px;line-height:1;font-size:.75rem;}
-  #ipRefresh:hover{color:var(--accent);border-color:var(--accent);}
-
-  /* search */
-  .search-block{padding:20px 24px;border-bottom:1px solid var(--border);}
-  .prompt-line{font-size:.85rem;color:var(--text-dim);margin-bottom:10px;}
-  .prompt-line .accent{color:var(--accent);}
-  .engines{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
-  .engines button{
-    background:transparent;border:1px solid var(--border);color:var(--text-dim);
-    padding:5px 12px;border-radius:4px;font-size:.78rem;
-  }
-  .engines button.active{background:var(--accent);border-color:var(--accent);color:var(--bg);}
-  .search-form{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);padding-bottom:8px;}
-  .search-form:focus-within{border-color:var(--accent);}
-  .prompt-caret{color:var(--accent);font-weight:700;}
-  #searchInput{flex:1;background:transparent;border:0;color:var(--text);outline:none;padding:6px 0;}
-  #searchInput::placeholder{color:var(--text-dim);}
-  .search-form button[type="submit"]{
-    background:var(--accent-dim);border:1px solid var(--accent);color:var(--text);
-    padding:6px 14px;border-radius:4px;font-size:.78rem;
-  }
-  .search-form button[type="submit"]:hover{background:var(--accent);color:var(--bg);}
-
-  /* link directory */
-  .links-grid{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:0;
-  }
-  .category{padding:20px 24px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);}
-  .chips{display:flex;flex-wrap:wrap;gap:8px;}
-  .chip{
-    border:1px solid var(--border);background:var(--bg-panel-alt);color:var(--text);
-    padding:6px 11px;border-radius:4px;font-size:.8rem;
-  }
-  .chip:hover{background:var(--accent);border-color:var(--accent);color:var(--bg);}
-  .custom-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--bg-panel-alt);border-radius:4px;padding:2px 4px 2px 11px;}
-  .custom-chip a{font-size:.8rem;}
-  .custom-chip:hover{border-color:var(--accent);}
-  .chip-del{background:transparent;border:0;color:var(--text-dim);font-size:.9rem;padding:2px 6px;border-radius:3px;}
-  .chip-del:hover{color:var(--danger);}
-  .empty-hint{color:var(--text-dim);font-size:.8rem;font-style:italic;}
-  .custom-form{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
-  .custom-form input{
-    background:transparent;border:1px solid var(--border);color:var(--text);
-    padding:6px 9px;border-radius:4px;flex:1 1 120px;min-width:0;
-  }
-  .custom-form input:focus{border-color:var(--accent);outline:none;}
-  .custom-form button{
-    background:transparent;border:1px solid var(--accent);color:var(--accent);
-    padding:6px 14px;border-radius:4px;font-size:.8rem;
-  }
-  .custom-form button:hover{background:var(--accent);color:var(--bg);}
-
-  .foot{
-    display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;
-    padding:14px 24px;color:var(--text-dim);font-size:.75rem;
-  }
-  kbd{
-    background:var(--bg-panel-alt);border:1px solid var(--border);border-radius:3px;
-    padding:1px 6px;font-family:inherit;
-  }
-
-  @media (max-width:640px){
-    .category{border-right:0;}
-    .brand-row{flex-direction:column;}
-  }
-
-  @media (prefers-reduced-motion:reduce){
-    .cursor{animation:none;opacity:1;}
-  }
-</style>
-</head>
-<body data-theme="redteam">
-<div class="crt-overlay"></div>
-<div class="wrap">
-  <div class="terminal">
-
-    <div class="titlebar">
-      <div class="dots"><span></span><span></span><span></span></div>
-      <div class="path">user@kali: ~/homepage</div>
-      <a class="home-link" href="index.html" title="вернуться на term·start">← home</a>
-      <div class="theme-switch">
-        <button data-theme-btn="redteam" class="active">redteam</button>
-        <button data-theme-btn="matrix">matrix</button>
+        <section class="panel module module-custom" id="links-panel">
+          <div class="panel-head">
+            <span class="panel-title" data-i18n="customLinks">Pinned resources</span>
+            <span class="hr" aria-hidden="true"></span>
+            <span class="panel-tag" data-i18n="customLinksTag">YOUR TOOLBELT</span>
+          </div>
+          <div class="links" id="custom-links"></div>
+          <form id="custom-form" class="custom-form">
+            <input
+              id="custom-label"
+              type="text"
+              placeholder="Name"
+              data-i18n-placeholder="linkName"
+              maxlength="40"
+              autocomplete="off"
+              aria-label="Link name"
+              data-i18n-aria-label="linkName"
+            />
+            <input
+              id="custom-url"
+              type="text"
+              placeholder="https://…"
+              maxlength="300"
+              autocomplete="off"
+              aria-label="Link address"
+              data-i18n-aria-label="linkAddress"
+            />
+            <button type="submit" class="btn" data-i18n="addLink">[ add ]</button>
+          </form>
+        </section>
       </div>
     </div>
 
-    <header class="brand-row">
-      <div class="brand">
-        <pre class="skull">    _______
-  /`       `\
- |  ()   ()  |
- |     ^     |
- |  'vvvvv'  |
-  \_________/
-   |  |||  |
-   |__|||__|</pre>
-        <div class="brand-text">
-          <h1>root<span class="dim">@</span>kali</h1>
-          <p class="tagline">// command center <span class="cursor">_</span></p>
-        </div>
+    <footer id="statusline">
+      <div class="st-left">
+        <button
+          type="button"
+          id="st-theme"
+          class="st-seg"
+          title="сменить тему (t)"
+          data-i18n-title="changeTheme"
+        >
+          theme
+        </button>
+        <span class="st-sep">│</span>
+        <button
+          type="button"
+          id="st-engine"
+          class="st-seg"
+          title="движок по умолчанию"
+          data-i18n-title="defaultEngine"
+        >
+          eng:ddg
+        </button>
+        <span class="st-sep">│</span>
+        <span class="st-seg" id="st-links">links:0</span>
+        <span class="st-sep">│</span>
+        <span class="st-seg" id="st-up">up 0:00</span>
       </div>
-      <div class="stats">
-        <div class="stat"><span class="stat-label">local time</span><span class="stat-value" id="clockVal">--:--:--</span></div>
-        <div class="stat"><span class="stat-label">date</span><span class="stat-value" id="dateVal">----</span></div>
-        <div class="stat">
-          <span class="stat-label">public ip</span>
-          <span class="stat-value"><span id="ipVal">...</span><button id="ipRefresh" title="обновить">⟳</button></span>
-        </div>
-        <div class="stat"><span class="stat-label">uptime</span><span class="stat-value" id="uptimeVal">00:00:00</span></div>
-        <div class="stat"><span class="stat-label">link</span><span class="stat-value" id="onlineVal">● online</span></div>
-      </div>
-    </header>
-
-    <section class="search-block">
-      <div class="prompt-line"><span class="accent">$</span> search</div>
-      <div class="engines" id="engineTabs">
-        <button data-engine="ddg">duckduckgo</button>
-        <button data-engine="google">google</button>
-        <button data-engine="shodan">shodan</button>
-        <button data-engine="censys">censys</button>
-        <button data-engine="exploitdb">exploit-db</button>
-        <button data-engine="github">github</button>
-      </div>
-      <form id="searchForm" class="search-form">
-        <span class="prompt-caret">&gt;</span>
-        <input id="searchInput" type="text" autocomplete="off" placeholder="введи запрос и жми enter..." />
-        <button type="submit">enter</button>
-      </form>
-    </section>
-
-    <section class="links-grid">
-
-      <div class="category">
-        <div class="prompt-line"><span class="accent">$</span> ls ./recon-osint/</div>
-        <div class="chips">
-          <a class="chip" href="https://www.shodan.io" target="_blank" rel="noopener noreferrer">shodan</a>
-          <a class="chip" href="https://search.censys.io" target="_blank" rel="noopener noreferrer">censys</a>
-          <a class="chip" href="https://crt.sh" target="_blank" rel="noopener noreferrer">crt.sh</a>
-          <a class="chip" href="https://web.archive.org" target="_blank" rel="noopener noreferrer">wayback machine</a>
-          <a class="chip" href="https://haveibeenpwned.com" target="_blank" rel="noopener noreferrer">have i been pwned</a>
-          <a class="chip" href="https://osintframework.com" target="_blank" rel="noopener noreferrer">osint framework</a>
-          <a class="chip" href="https://dnsdumpster.com" target="_blank" rel="noopener noreferrer">dnsdumpster</a>
-          <a class="chip" href="https://github.com/laramies/theHarvester" target="_blank" rel="noopener noreferrer">theHarvester</a>
-          <!-- добавляй свои ссылки сюда: <a class="chip" href="...">label</a> -->
-        </div>
-      </div>
-
-      <div class="category">
-        <div class="prompt-line"><span class="accent">$</span> ls ./exploit-cve/</div>
-        <div class="chips">
-          <a class="chip" href="https://www.exploit-db.com" target="_blank" rel="noopener noreferrer">exploit-db</a>
-          <a class="chip" href="https://nvd.nist.gov" target="_blank" rel="noopener noreferrer">nvd</a>
-          <a class="chip" href="https://cve.mitre.org" target="_blank" rel="noopener noreferrer">mitre cve</a>
-          <a class="chip" href="https://vulners.com" target="_blank" rel="noopener noreferrer">vulners</a>
-          <a class="chip" href="https://packetstormsecurity.com" target="_blank" rel="noopener noreferrer">packet storm</a>
-          <a class="chip" href="https://gtfobins.github.io" target="_blank" rel="noopener noreferrer">gtfobins</a>
-          <a class="chip" href="https://lolbas-project.github.io" target="_blank" rel="noopener noreferrer">lolbas</a>
-          <a class="chip" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">cisa kev</a>
-        </div>
-      </div>
-
-      <div class="category">
-        <div class="prompt-line"><span class="accent">$</span> ls ./learning-ctf/</div>
-        <div class="chips">
-          <a class="chip" href="https://www.hackthebox.com" target="_blank" rel="noopener noreferrer">hack the box</a>
-          <a class="chip" href="https://tryhackme.com" target="_blank" rel="noopener noreferrer">tryhackme</a>
-          <a class="chip" href="https://portswigger.net/web-security" target="_blank" rel="noopener noreferrer">web security academy</a>
-          <a class="chip" href="https://pentesterlab.com" target="_blank" rel="noopener noreferrer">pentesterlab</a>
-          <a class="chip" href="https://www.vulnhub.com" target="_blank" rel="noopener noreferrer">vulnhub</a>
-          <a class="chip" href="https://ctftime.org" target="_blank" rel="noopener noreferrer">ctftime</a>
-          <a class="chip" href="https://overthewire.org" target="_blank" rel="noopener noreferrer">overthewire</a>
-          <a class="chip" href="https://picoctf.org" target="_blank" rel="noopener noreferrer">picoctf</a>
-        </div>
-      </div>
-
-      <div class="category">
-        <div class="prompt-line"><span class="accent">$</span> ls ./tool-docs/</div>
-        <div class="chips">
-          <a class="chip" href="https://www.kali.org/tools/" target="_blank" rel="noopener noreferrer">kali tools</a>
-          <a class="chip" href="https://nmap.org/book/man.html" target="_blank" rel="noopener noreferrer">nmap</a>
-          <a class="chip" href="https://docs.metasploit.com" target="_blank" rel="noopener noreferrer">metasploit</a>
-          <a class="chip" href="https://portswigger.net/burp/documentation" target="_blank" rel="noopener noreferrer">burp suite</a>
-          <a class="chip" href="https://www.wireshark.org/docs/" target="_blank" rel="noopener noreferrer">wireshark</a>
-          <a class="chip" href="https://hashcat.net/hashcat/" target="_blank" rel="noopener noreferrer">hashcat</a>
-          <a class="chip" href="https://owasp.org" target="_blank" rel="noopener noreferrer">owasp</a>
-          <a class="chip" href="https://book.hacktricks.xyz" target="_blank" rel="noopener noreferrer">hacktricks</a>
-        </div>
-      </div>
-
-      <div class="category">
-        <div class="prompt-line"><span class="accent">$</span> ls ./news-community/</div>
-        <div class="chips">
-          <a class="chip" href="https://news.ycombinator.com" target="_blank" rel="noopener noreferrer">hacker news</a>
-          <a class="chip" href="https://www.reddit.com/r/netsec/" target="_blank" rel="noopener noreferrer">r/netsec</a>
-          <a class="chip" href="https://thehackernews.com" target="_blank" rel="noopener noreferrer">the hacker news</a>
-          <a class="chip" href="https://www.bleepingcomputer.com" target="_blank" rel="noopener noreferrer">bleepingcomputer</a>
-          <a class="chip" href="https://krebsonsecurity.com" target="_blank" rel="noopener noreferrer">krebs on security</a>
-          <a class="chip" href="https://www.darkreading.com" target="_blank" rel="noopener noreferrer">dark reading</a>
-        </div>
-      </div>
-
-      <div class="category">
-        <div class="prompt-line"><span class="accent">$</span> ls ./custom/</div>
-        <div class="chips" id="customChips"></div>
-        <form id="customForm" class="custom-form">
-          <input id="customLabel" placeholder="label" maxlength="40" />
-          <input id="customUrl" placeholder="https://..." maxlength="300" />
-          <button type="submit">add</button>
-        </form>
-      </div>
-
-    </section>
-
-    <footer class="foot">
-      <span>жми <kbd>/</kbd> чтобы перейти в поиск</span>
-      <span>свои ссылки — через ./custom/ или прямо в html-файле</span>
+      <div class="st-right" data-i18n="statusHelp">/ поиск · t тема · ? помощь</div>
     </footer>
 
-  </div>
-</div>
+    <dialog
+      class="settings-drawer"
+      id="settings"
+      aria-modal="true"
+      aria-labelledby="settings-heading"
+    >
+      <header class="drawer-header">
+        <div>
+          <span class="drawer-kicker" data-i18n="settingsKicker">WORKSPACE / CONTROL</span>
+          <h2 class="drawer-title" id="settings-heading" data-i18n="settings">Настройки</h2>
+        </div>
+        <button
+          type="button"
+          class="btn drawer-close"
+          id="setting-close"
+          aria-label="Закрыть настройки"
+          data-i18n-aria-label="closeDialog"
+        >×</button>
+      </header>
+      <div class="drawer-body">
+        <section class="drawer-section" aria-labelledby="appearance-heading">
+          <h3 id="appearance-heading" data-i18n="appearance">Внешний вид и поиск</h3>
+          <div class="set-row">
+            <label for="setting-theme" data-i18n="theme">Тема</label>
+            <select id="setting-theme" data-i18n-aria-label="theme"></select>
+          </div>
+          <div class="set-row">
+            <label for="setting-engine" data-i18n="engine">Движок</label>
+            <select id="setting-engine" data-i18n-aria-label="engine"></select>
+          </div>
+          <div class="set-row">
+            <label for="setting-language" data-i18n="language">Язык интерфейса</label>
+            <select id="setting-language" data-i18n-aria-label="language">
+              <option value="ru" data-i18n="russian">Русский</option>
+              <option value="en" data-i18n="english">English</option>
+            </select>
+          </div>
+          <div class="set-row">
+            <label for="setting-density" data-i18n="layoutDensity">Плотность</label>
+            <select id="setting-density" data-i18n-aria-label="layoutDensity">
+              <option value="comfortable" data-i18n="densityComfortable">Комфортная</option>
+              <option value="compact" data-i18n="densityCompact">Компактная</option>
+            </select>
+          </div>
+          <div class="set-row">
+            <label for="setting-columns" data-i18n="layoutColumns">Колонки</label>
+            <select id="setting-columns" data-i18n-aria-label="layoutColumns">
+              <option value="two" data-i18n="columnsTwo">Две</option>
+              <option value="one" data-i18n="columnsOne">Одна</option>
+            </select>
+          </div>
+        </section>
 
-<script>
-(function(){
-  // ---------- theme ----------
-  function setTheme(t){
-    document.body.dataset.theme = t;
-    localStorage.setItem('hpTheme', t);
-    document.querySelectorAll('[data-theme-btn]').forEach(function(b){
-      b.classList.toggle('active', b.dataset.themeBtn === t);
-    });
-  }
-  document.querySelectorAll('[data-theme-btn]').forEach(function(b){
-    b.addEventListener('click', function(){ setTheme(b.dataset.themeBtn); });
-  });
-  setTheme(localStorage.getItem('hpTheme') || 'redteam');
+        <section class="drawer-section" aria-labelledby="modules-heading">
+          <h3 id="modules-heading" data-i18n="moduleControls">Модули рабочего стола</h3>
+          <p class="drawer-description" data-i18n="moduleControlsHelp">
+            Выберите видимые модули и задайте их порядок.
+          </p>
+          <div class="module-control-list" id="module-controls">
+            <div class="module-control" data-module-control="quick-links">
+              <label><input type="checkbox" data-module-toggle="quick-links" checked /><span data-i18n="showQuickLinks">Быстрый доступ</span></label>
+              <div class="module-reorder">
+                <button type="button" class="btn" data-module-move="-1" title="Переместить вверх" data-i18n-title="moveUp" aria-label="Переместить вверх" data-i18n-aria-label="moveUp">↑</button>
+                <button type="button" class="btn" data-module-move="1" title="Переместить вниз" data-i18n-title="moveDown" aria-label="Переместить вниз" data-i18n-aria-label="moveDown">↓</button>
+              </div>
+            </div>
+            <div class="module-control" data-module-control="intel-module">
+              <label><input type="checkbox" data-module-toggle="intel-module" checked /><span data-i18n="showThreatContext">Контекст угроз</span></label>
+              <div class="module-reorder">
+                <button type="button" class="btn" data-module-move="-1" title="Переместить вверх" data-i18n-title="moveUp" aria-label="Переместить вверх" data-i18n-aria-label="moveUp">↑</button>
+                <button type="button" class="btn" data-module-move="1" title="Переместить вниз" data-i18n-title="moveDown" aria-label="Переместить вниз" data-i18n-aria-label="moveDown">↓</button>
+              </div>
+            </div>
+            <div class="module-control" data-module-control="node-panel">
+              <label><input type="checkbox" data-module-toggle="node-panel" checked /><span data-i18n="showSessionStatus">Состояние сессии</span></label>
+              <div class="module-reorder">
+                <button type="button" class="btn" data-module-move="-1" title="Переместить вверх" data-i18n-title="moveUp" aria-label="Переместить вверх" data-i18n-aria-label="moveUp">↑</button>
+                <button type="button" class="btn" data-module-move="1" title="Переместить вниз" data-i18n-title="moveDown" aria-label="Переместить вниз" data-i18n-aria-label="moveDown">↓</button>
+              </div>
+            </div>
+            <div class="module-control" data-module-control="detection-module">
+              <label><input type="checkbox" data-module-toggle="detection-module" checked /><span data-i18n="showDetection">Разработка детектов</span></label>
+              <div class="module-reorder">
+                <button type="button" class="btn" data-module-move="-1" title="Переместить вверх" data-i18n-title="moveUp" aria-label="Переместить вверх" data-i18n-aria-label="moveUp">↑</button>
+                <button type="button" class="btn" data-module-move="1" title="Переместить вниз" data-i18n-title="moveDown" aria-label="Переместить вниз" data-i18n-aria-label="moveDown">↓</button>
+              </div>
+            </div>
+            <div class="module-control" data-module-control="notes-module">
+              <label><input type="checkbox" data-module-toggle="notes-module" checked /><span data-i18n="showNotes">Полевые заметки</span></label>
+              <div class="module-reorder">
+                <button type="button" class="btn" data-module-move="-1" title="Переместить вверх" data-i18n-title="moveUp" aria-label="Переместить вверх" data-i18n-aria-label="moveUp">↑</button>
+                <button type="button" class="btn" data-module-move="1" title="Переместить вниз" data-i18n-title="moveDown" aria-label="Переместить вниз" data-i18n-aria-label="moveDown">↓</button>
+              </div>
+            </div>
+            <div class="module-control" data-module-control="labs-module">
+              <label><input type="checkbox" data-module-toggle="labs-module" checked /><span data-i18n="showLabs">Практические лаборатории</span></label>
+              <div class="module-reorder">
+                <button type="button" class="btn" data-module-move="-1" title="Переместить вверх" data-i18n-title="moveUp" aria-label="Переместить вверх" data-i18n-aria-label="moveUp">↑</button>
+                <button type="button" class="btn" data-module-move="1" title="Переместить вниз" data-i18n-title="moveDown" aria-label="Переместить вниз" data-i18n-aria-label="moveDown">↓</button>
+              </div>
+            </div>
+            <div class="module-control" data-module-control="links-panel">
+              <label><input type="checkbox" data-module-toggle="links-panel" checked /><span data-i18n="showPinnedResources">Личные ресурсы</span></label>
+              <div class="module-reorder">
+                <button type="button" class="btn" data-module-move="-1" title="Переместить вверх" data-i18n-title="moveUp" aria-label="Переместить вверх" data-i18n-aria-label="moveUp">↑</button>
+                <button type="button" class="btn" data-module-move="1" title="Переместить вниз" data-i18n-title="moveDown" aria-label="Переместить вниз" data-i18n-aria-label="moveDown">↓</button>
+              </div>
+            </div>
+          </div>
+        </section>
+        <button type="button" class="btn drawer-reset" id="settings-reset" data-i18n="resetWorkspace">
+          Вернуть расположение по умолчанию
+        </button>
+      </div>
+    </dialog>
 
-  // ---------- clock / date ----------
-  var clockVal = document.getElementById('clockVal');
-  var dateVal = document.getElementById('dateVal');
-  function pad(n){ return n.toString().padStart(2,'0'); }
-  function tickClock(){
-    var now = new Date();
-    clockVal.textContent = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
-    dateVal.textContent = now.toLocaleDateString(undefined,{year:'numeric',month:'2-digit',day:'2-digit'});
-  }
-  tickClock(); setInterval(tickClock, 1000);
+    <div class="overlay" id="help" hidden>
+      <div
+        class="dialog help"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Помощь"
+        data-i18n-aria-label="help"
+      >
+        <div class="dialog-head">
+          <span class="dialog-title">man ryu-kowasu</span
+          ><span class="hr" aria-hidden="true"></span
+          ><button type="button" class="btn overlay-close">esc</button>
+        </div>
+        <div class="dialog-body">
+          <h3 data-i18n="search">поиск</h3>
+          <table>
+            <tr><td>d</td><td data-i18n="helpDdg">DuckDuckGo — обычный веб-поиск</td></tr>
+            <tr><td>g</td><td data-i18n="helpGoogle">Google — обычный веб-поиск</td></tr>
+            <tr><td>NVD</td><td data-i18n="helpNvd">поиск записей в базе уязвимостей NVD</td></tr>
+            <tr><td>CVE.org</td><td data-i18n="helpCve">поиск идентификаторов CVE</td></tr>
+            <tr><td>github</td><td data-i18n="helpGithub">код, инструменты, конфиги</td></tr>
+          </table>
+          <h3 data-i18n="hotkeys">горячие клавиши</h3>
+          <table>
+            <tr><td><kbd>/</kbd></td><td data-i18n="focusSearch">фокус в строку поиска</td></tr>
+            <tr><td><kbd>t</kbd></td><td data-i18n="switchTheme">переключить тему из themes.json</td></tr>
+            <tr><td><kbd>e</kbd></td><td data-i18n="focusCustomLink">фокус в поле своей ссылки</td></tr>
+            <tr><td><kbd>Ctrl+Enter</kbd></td><td data-i18n="switchPage">следующая страница</td></tr>
+            <tr><td><kbd>?</kbd></td><td data-i18n="openHelp">эта справка</td></tr>
+            <tr><td><kbd>esc</kbd></td><td data-i18n="closeDialog">закрыть окно</td></tr>
+          </table>
+          <h3 data-i18n="customLinks">свои ссылки</h3>
+          <p data-i18n="customLinksHelp">
+            добавляются в блок «свои ссылки» и хранятся в localStorage. Удаление —
+            по × на плитке.
+          </p>
+        </div>
+      </div>
+    </div>
 
-  // ---------- uptime ----------
-  var uptimeVal = document.getElementById('uptimeVal');
-  var bootTs = Date.now();
-  function tickUptime(){
-    var diff = Math.floor((Date.now()-bootTs)/1000);
-    var h = pad(Math.floor(diff/3600));
-    var m = pad(Math.floor((diff%3600)/60));
-    var s = pad(diff%60);
-    uptimeVal.textContent = h+':'+m+':'+s;
-  }
-  tickUptime(); setInterval(tickUptime, 1000);
+    <div id="toasts" aria-live="polite"></div>
 
-  // ---------- online status ----------
-  var onlineVal = document.getElementById('onlineVal');
-  function tickOnline(){
-    var on = navigator.onLine;
-    onlineVal.textContent = on ? '● online' : '● offline';
-    onlineVal.classList.toggle('is-on', on);
-    onlineVal.classList.toggle('is-off', !on);
-  }
-  window.addEventListener('online', tickOnline);
-  window.addEventListener('offline', tickOnline);
-  tickOnline();
-
-  // ---------- public ip ----------
-  var ipVal = document.getElementById('ipVal');
-  var ipRefresh = document.getElementById('ipRefresh');
-  function fetchIp(){
-    ipVal.textContent = '...';
-    fetch('https://api.ipify.org?format=json', {cache:'no-store'})
-      .then(function(res){ if(!res.ok) throw new Error('bad response'); return res.json(); })
-      .then(function(data){ ipVal.textContent = data.ip; })
-      .catch(function(){ ipVal.textContent = 'unreachable'; });
-  }
-  ipRefresh.addEventListener('click', fetchIp);
-  fetchIp();
-
-  // ---------- search engines ----------
-  var ENGINES = {
-    ddg:      function(q){ return 'https://duckduckgo.com/?q='+encodeURIComponent(q); },
-    google:   function(q){ return 'https://www.google.com/search?q='+encodeURIComponent(q); },
-    shodan:   function(q){ return 'https://www.shodan.io/search?query='+encodeURIComponent(q); },
-    censys:   function(q){ return 'https://search.censys.io/search?resource=hosts&q='+encodeURIComponent(q); },
-    exploitdb:function(q){ return 'https://www.exploit-db.com/search?q='+encodeURIComponent(q); },
-    github:   function(q){ return 'https://github.com/search?q='+encodeURIComponent(q); }
-  };
-  var engineTabs = document.getElementById('engineTabs');
-  var searchForm = document.getElementById('searchForm');
-  var searchInput = document.getElementById('searchInput');
-  var currentEngine = localStorage.getItem('hpEngine') || 'ddg';
-  if(!ENGINES[currentEngine]) currentEngine = 'ddg';
-
-  function setEngine(key){
-    currentEngine = key;
-    localStorage.setItem('hpEngine', key);
-    engineTabs.querySelectorAll('button').forEach(function(b){
-      b.classList.toggle('active', b.dataset.engine === key);
-    });
-  }
-  engineTabs.addEventListener('click', function(e){
-    var btn = e.target.closest('button');
-    if(!btn) return;
-    setEngine(btn.dataset.engine);
-    searchInput.focus();
-  });
-  setEngine(currentEngine);
-
-  searchForm.addEventListener('submit', function(e){
-    e.preventDefault();
-    var q = searchInput.value.trim();
-    if(!q) return;
-    var build = ENGINES[currentEngine] || ENGINES.ddg;
-    window.open(build(q), '_blank', 'noopener');
-  });
-
-  document.addEventListener('keydown', function(e){
-    var tag = document.activeElement ? document.activeElement.tagName : '';
-    if(e.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA'){
-      e.preventDefault();
-      searchInput.focus();
-    }
-  });
-
-  // ---------- custom links ----------
-  var customChips = document.getElementById('customChips');
-  var customForm = document.getElementById('customForm');
-  var customLabel = document.getElementById('customLabel');
-  var customUrl = document.getElementById('customUrl');
-
-  function loadCustom(){
-    try { return JSON.parse(localStorage.getItem('hpCustomLinks') || '[]'); }
-    catch(e){ return []; }
-  }
-  function saveCustom(arr){ localStorage.setItem('hpCustomLinks', JSON.stringify(arr)); }
-
-  function renderCustom(){
-    var arr = loadCustom();
-    customChips.innerHTML = '';
-    if(!arr.length){
-      var hint = document.createElement('span');
-      hint.className = 'empty-hint';
-      hint.textContent = 'пока пусто — добавь ссылку ниже';
-      customChips.appendChild(hint);
-      return;
-    }
-    arr.forEach(function(item, idx){
-      var wrap = document.createElement('span');
-      wrap.className = 'custom-chip';
-      var a = document.createElement('a');
-      a.href = item.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
-      a.textContent = item.label;
-      var del = document.createElement('button');
-      del.className = 'chip-del'; del.textContent = '×'; del.title = 'удалить';
-      del.addEventListener('click', function(){
-        var arr2 = loadCustom();
-        arr2.splice(idx, 1);
-        saveCustom(arr2);
-        renderCustom();
-      });
-      wrap.appendChild(a); wrap.appendChild(del);
-      customChips.appendChild(wrap);
-    });
-  }
-
-  customForm.addEventListener('submit', function(e){
-    e.preventDefault();
-    var label = customLabel.value.trim();
-    var url = customUrl.value.trim();
-    if(!label || !url) return;
-    if(!/^https?:\/\//i.test(url)) url = 'https://' + url;
-    var arr = loadCustom();
-    arr.push({label: label, url: url});
-    saveCustom(arr);
-    customLabel.value = ''; customUrl.value = '';
-    renderCustom();
-  });
-
-  renderCustom();
-})();
-</script>
-</body>
+    <script type="module" src="assets/js/theme-loader.js"></script>
+    <script type="module" src="assets/js/page-switch.js"></script>
+    <script type="module" src="assets/js/kowasu.js"></script>
+  </body>
 </html>
